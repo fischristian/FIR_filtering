@@ -1,0 +1,19 @@
+- Image has Height*Width number of Pixels, each Pixel 8 Bit grey-value [0..255] ?
+- any special image-format?
+- Height and Width are known ?
+- what output is generated?
+- std::vector<float> by api or std::in?
+- assumption: max length of vector? range for values in vector?
+- error messages to std::out?
+- documentation as word, txt, .. ?
+- github ok?
+
+- module == executable or dynamic library?
+
+-> win or linux, x86 / x86_64
+-> use native compilation, not CLR.
+-> documentation of whole solution
+-> documentation of each public function
+
+1 - dynamic library "filter"
+2 - executable "test_app"
