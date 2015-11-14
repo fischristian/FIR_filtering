@@ -17,3 +17,37 @@
 
 1 - dynamic library "filter"
 2 - executable "test_app"
+
+        // create a test image:
+    	// height = 480, width = 640
+    	int ImageSize = 480 * 640;
+    	unsigned char * pImage = new unsigned char[ImageSize];
+    	for(int i = 0; i < ImageSize; ++i) {
+    		pImage[i] = (unsigned char)(i % 255);
+    		// std::cout << "pImage: " << pImage[i] << "\n";
+    	}
+    	
+    	unsigned char * pFilteredImage = new unsigned char[ImageSize];
+    	memset((void*)pFilteredImage, 0, ImageSize);
+    	
+    	/*
+    	fircoeffs = { 1/11, 2/11, 5/11, 2/11, 1/11 }; // for example 
+        for each 'y' in column rows: 
+        filtered[y] = 0; 
+        for each 'i' in fircoeffs: 
+        if 'y+i' is in the original image boundaries: 
+        filtered[y] += original[y+i] * fircoeffs[i]; 
+    	*/
+    	
+    	int iNumCoff = test_coff.size();
+    	for(int iPxl = 0; iPxl < ImageSize; ++iPxl) {
+    		if((iPxl % 640) < (640 - iNumCoff)) {
+    			// std::cout << "Current Pixel: "<< (iPxl % 640) << " \n";
+    			// std::cout << "PixelValue = " << *(pImage + iPxl) << " \n";
+    			for(int i = 0; i < iNumCoff; ++i) {
+    				pFilteredImage[iPxl] += pImage[iPxl] * test_coff[i];
+    			}
+    			std::cout << "Original Image: " << pImage[iPxl] << "\n";
+    			std::cout << "Filtered Image: " << pFilteredImage[iPxl] << "\n";
+    		}
+    	}
