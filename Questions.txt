@@ -10,11 +10,6 @@
 
 - module == executable or dynamic library?
 
--> win or linux, x86 / x86_64
--> use native compilation, not CLR.
--> documentation of whole solution
--> documentation of each public function
-
 1 - dynamic library "filter"
 2 - executable "test_app"
 
@@ -51,3 +46,12 @@
     			std::cout << "Filtered Image: " << pFilteredImage[iPxl] << "\n";
     		}
     	}
+
+-	Make the algorithm work - improve?
+-	Test for several input
+-	Implement multithreading: start / stop threads
+	http://de.cppreference.com/w/cpp/thread/thread
+-	Measure time / images per second in single threaded / multithreaded application
+	http://stackoverflow.com/questions/22387586/c-measuring-execution-time-of-a-function
+	
+- documentation: doxygen, ..
