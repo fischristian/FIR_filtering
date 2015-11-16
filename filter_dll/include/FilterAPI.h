@@ -9,11 +9,12 @@
 // project whose source files include this file see
 // FILTER_API functions as being imported from a DLL, whereas this DLL
 // sees symbols defined with this macro as being exported.
-#ifndef _GNULINUX
+#ifndef __linux
 #define FILTER_API __declspec(dllexport)
 #else
 #define FILTER_API
 #endif
+
 
 #include <vector>
 

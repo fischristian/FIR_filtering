@@ -3,12 +3,15 @@
 #include <iostream>
 #include "../include/FilterAPI.h"
 
+        std::vector<float>FilterAPI::Filter::mFilter;
+        std::string FilterAPI::Filter::mImage = "";
+
 #ifdef __cplusplus
 extern "C" {
     namespace FilterAPI {
 #endif
-        std::vector<float>Filter::mFilter;
-        std::string Filter::mImage;
+        // std::vector<float>Filter::mFilter;
+        // std::string Filter::mImage = "";
 
         void Filter::setFilter(const std::vector<float>& vFilter, unsigned int uNumThreads) {
             if (vFilter.empty()){

@@ -4,11 +4,11 @@
 #include "../include/TestApp.h"
 #include "../../filter_dll/include/FilterAPI.h"
 
-#ifndef _GNULINUX
+#ifndef __linux
 #include <tchar.h>
 int _tmain(int argc, _TCHAR* argv[])
 #else
-int main(int argc, _TCHAR* argv[])
+int main(int argc, char** argv)
 #endif
 {
     std::string sourceImage = "abc.bin";
