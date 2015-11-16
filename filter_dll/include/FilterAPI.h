@@ -25,14 +25,41 @@ extern "C" {
     namespace FilterAPI {
 #endif
 
+/*!
+ * class filter
+ */
 class FILTER_API Filter{
 public:
-    static void setFilter(const std::vector<float>& vFilter, unsigned int uNumThreads);
+    /* \fn        configureFilter
+     * \param
+     * \brief
+     * \return
+     * \exception
+     */
+    static void configureFilter(const std::vector<float>& vFilter, unsigned int uNumThreads);
 
+   /* \fn         loadImage
+    * \param
+    * \brief
+    * \return
+    * \exception
+    */
     static bool loadImage(const std::string& source);
 
+   /* \fn         Start
+    * \param
+    * \brief
+    * \return
+    * \exception
+    */
     static void Start();
 
+   /* \fn         Stop
+    * \param
+    * \brief
+    * \return
+    * \exception
+    */
     static void Stop();
 private:
     static std::vector<float> mFilter;

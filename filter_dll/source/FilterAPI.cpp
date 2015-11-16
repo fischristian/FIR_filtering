@@ -56,12 +56,12 @@ extern "C" {
             pFilteredImage = NULL;
         }
 
-        void Filter::setFilter(const std::vector<float>& vFilter, unsigned int uNumThreads) {
+        void Filter::configureFilter(const std::vector<float>& vFilter, unsigned int uNumThreads) {
             if (vFilter.empty()){
-                throw - 1;
+                throw new std::string("Filter coefficients are empty");
             }
             if (uNumThreads == 0){
-                throw - 2;
+                throw new std::string("Number of threads is zero");
             }
             std::cout << "Filter::setFilter called \n";
             Filter::mFilter = vFilter;
@@ -70,7 +70,7 @@ extern "C" {
 
         bool Filter::loadImage(const std::string& source) {
             if (source == ""){
-                throw - 1;
+                throw new std::string("Invalid Image source");
             }
             std::cout << "Filter::loadImage called \n";
             mImage = source;
@@ -79,10 +79,10 @@ extern "C" {
 
         void Filter::Start() {
             if (mFilter.empty()) {
-                throw -1;
+                throw new std::string("Invalid filter coefficients");
             }
             if (mImage == "") {
-                throw -2;
+                throw new std::string("Invalid image source");
             }
 
             for (int i = 0; i < mNumThreads; ++i){

@@ -11,18 +11,19 @@ int _tmain(int argc, _TCHAR* argv[])
 int main(int argc, char* argv[])
 #endif
 {
-    std::string sourceImage = "abc.bin";
-    FilterAPI::Filter::loadImage(sourceImage);
+    try {
+        std::string sourceImage = "";
+        FilterAPI::Filter::loadImage(sourceImage);
 
-    float OBE = (float)1 / (float)11;
-    std::vector<float>test_vector({ OBE, 2*OBE, 5*OBE, 2*OBE, 1*OBE });
-    FilterAPI::Filter::setFilter(test_vector, 3);
+        float OBE = (float)1 / (float)11;
+        std::vector<float>test_vector({ OBE, 2*OBE, 5*OBE, 2*OBE, 1*OBE });
+        FilterAPI::Filter::configureFilter(test_vector, 3);
 
-    try{
         FilterAPI::Filter::Start();
         FilterAPI::Filter::Stop();
     }
-    catch (...){
-        std::cout << "Exception caught during filter";
+    catch (std::string * ex){
+        std::cout << "Exception caught: " << ex->c_str()  << "\n"
+            << "Programm terminating." << std::endl;
     }
 }

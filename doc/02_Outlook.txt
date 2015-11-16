@@ -1,3 +1,11 @@
 Further improvements:
 
-- ...
+- using boost library
+- compiler flags to optimize code
+- doxygen code
+
+Comments:
+
+- What was easy:
+
+- What was difficult:
