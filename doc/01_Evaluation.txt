@@ -1,0 +1,12 @@
+Performance
+- 2 for loops: square of complexity
+
+Quality of Code
+- static analysis: cppcheck
+- dynamic analysis:
+
+Limitations
+- uses std c++11 only
+- could use other libraries as boost
+- yet most simple solution
+- meets all requirements?

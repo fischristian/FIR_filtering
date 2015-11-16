@@ -16,10 +16,11 @@ int main(int argc, char* argv[])
 
     float OBE = (float)1 / (float)11;
     std::vector<float>test_vector({ OBE, 2*OBE, 5*OBE, 2*OBE, 1*OBE });
-    FilterAPI::Filter::setFilter(test_vector, 1);
+    FilterAPI::Filter::setFilter(test_vector, 3);
 
     try{
-        FilterAPI::Filter::applyFilter();
+        FilterAPI::Filter::Start();
+        FilterAPI::Filter::Stop();
     }
     catch (...){
         std::cout << "Exception caught during filter";

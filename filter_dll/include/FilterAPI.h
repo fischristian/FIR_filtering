@@ -15,7 +15,9 @@
 #define FILTER_API
 #endif
 
-
+#include <iostream>
+#include <thread>
+#include <string.h>
 #include <vector>
 
 #ifdef __cplusplus
@@ -29,13 +31,17 @@ public:
 
     static bool loadImage(const std::string& source);
 
-    static void applyFilter();
+    static void Start();
+
+    static void Stop();
 private:
     static std::vector<float> mFilter;
 
     static std::string mImage;
 
     static unsigned int mNumThreads;
+
+    static std::vector<std::thread*>mWorkerThreads;
 };
 
 #ifdef __cplusplus

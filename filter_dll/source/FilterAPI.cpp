@@ -1,20 +1,21 @@
 /* Copyright (C) 2015 Christian Fischer */
-#include <vector>
-#include <iostream>
-#include <thread>
-#include <string.h>
+
 #include "../include/FilterAPI.h"
 
         std::vector<float>FilterAPI::Filter::mFilter;
         std::string FilterAPI::Filter::mImage = "";
         unsigned int FilterAPI::Filter::mNumThreads = 0;
+        std::vector<std::thread*> FilterAPI::Filter::mWorkerThreads;
+
+        // std::thread does not provide a termination flag
+        bool bGlobalExit = false;
 
 #ifdef __cplusplus
 extern "C" {
     namespace FilterAPI {
 #endif
 
-        void WorkerApplyFilter(std::vector<float>filter_coeff) {
+        void ThreadRoutine(std::vector<float>filter_coeff) {
             // create a test image:
             // height = 480, width = 640
             int ImageSize = 480 * 640;
@@ -36,17 +37,23 @@ extern "C" {
             if 'y+i' is in the original image boundaries:
             filtered[y] += original[y+i] * fircoeffs[i];
             */
-
-            int iNumCoff = test_coff.size();
-            for (int iPxl = 0; iPxl < ImageSize; ++iPxl) {
-                if ((iPxl % 640) < (640 - iNumCoff)) {
-                    // std::cout << "Current Pixel: "<< (iPxl % 640) << " \n";
-                    // std::cout << "PixelValue = " << *(pImage + iPxl) << " \n";
-                    for (int i = 0; i < iNumCoff; ++i) {
-                        pFilteredImage[iPxl] += pImage[iPxl + i] * test_coff[i];
+            while (!bGlobalExit) {
+                int iNumCoff = test_coff.size();
+                for (int iPxl = 0; iPxl < ImageSize; ++iPxl) {
+                    if ((iPxl % 640) < (640 - iNumCoff)) {
+                        // std::cout << "Current Pixel: "<< (iPxl % 640) << " \n";
+                        // std::cout << "PixelValue = " << *(pImage + iPxl) << " \n";
+                        for (int i = 0; i < iNumCoff; ++i) {
+                            pFilteredImage[iPxl] += pImage[iPxl + i] * test_coff[i];
+                        }
                     }
                 }
             }
+
+            delete[] pImage;
+            pImage = NULL;
+            delete[] pFilteredImage;
+            pFilteredImage = NULL;
         }
 
         void Filter::setFilter(const std::vector<float>& vFilter, unsigned int uNumThreads) {
@@ -70,7 +77,7 @@ extern "C" {
             return true;
         }
 
-        void Filter::applyFilter(){
+        void Filter::Start() {
             if (mFilter.empty()) {
                 throw -1;
             }
@@ -79,13 +86,26 @@ extern "C" {
             }
 
             for (int i = 0; i < mNumThreads; ++i){
-                std::thread first(WorkerApplyFilter, mFilter);
-                first.join();
+                std::thread * first = new std::thread(ThreadRoutine, mFilter);
+                mWorkerThreads.push_back(first);
             }
 
             mFilter.clear();
             mImage = "";
         }
+
+        void Filter::Stop() {
+            bGlobalExit = true;
+            while (!mWorkerThreads.empty()) {
+                std::thread * pThread = mWorkerThreads.back();
+                pThread->join();
+                mWorkerThreads.pop_back();
+                delete pThread;
+                if (mWorkerThreads.empty()) {
+                    break;
+                }
+            }
+         }
 #ifdef __cplusplus
 }  //  namespace FilterAPI
 }  //  extern "C" {
