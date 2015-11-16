@@ -20,11 +20,12 @@ SOURCE_GROUP("Header Files" FILES    ${HEADER_FILES} )
 SOURCE_GROUP("Source Files\\XML" FILES  ${XML_FILES} )
 ENDIF(MSVC)
 
-
 ADD_LIBRARY(
     Filter_Library
     SHARED
     ${HEADER_FILES}
     ${SOURCE_FILES}
 )
+
+SET(CMAKE_CXX_FLAGS "-std=c++0x")
 

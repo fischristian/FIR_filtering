@@ -34,6 +34,8 @@ private:
     static std::vector<float> mFilter;
 
     static std::string mImage;
+
+    static unsigned int mNumThreads;
 };
 
 #ifdef __cplusplus
