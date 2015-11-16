@@ -14,7 +14,8 @@ int main(int argc, char** argv)
     std::string sourceImage = "abc.bin";
     FilterAPI::Filter::loadImage(sourceImage);
 
-    std::vector<float>test_vector;
+    float OBE = (float)1 / (float)11;
+    std::vector<float>test_vector({ OBE, 2*OBE, 5*OBE, 2*OBE, 1*OBE });
     FilterAPI::Filter::setFilter(test_vector, 1);
 
     try{
