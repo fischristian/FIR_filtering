@@ -3,7 +3,7 @@
 #include "../include/FilterAPI.h"
 
         std::vector<float>FilterAPI::Filter::mFilter;
-        std::string FilterAPI::Filter::mImage = "";
+        unsigned char * FilterAPI::Filter::mImage = 0;
         unsigned int FilterAPI::Filter::mNumThreads = 0;
         std::vector<std::thread*> FilterAPI::Filter::mWorkerThreads;
 
@@ -72,8 +72,34 @@ extern "C" {
             if (source == ""){
                 throw new std::string("Invalid Image source");
             }
-            std::cout << "Filter::loadImage called \n";
-            mImage = source;
+            // std::cout << "Filter::loadImage called \n";
+            FILE * pFile = nullptr;
+#ifndef __linux
+            errno_t err = fopen_s(&pFile, source.c_str(), "r+b");
+#else
+            pFile = fopen(source.c_str(), "r+b");
+#endif
+            if (pFile != nullptr) {
+                //  lesen id
+                fseek(pFile, static_cast<int>(sizeof(unsigned int)) * (-1), SEEK_END);
+                unsigned int nAdditionalData = 0;
+                size_t iLen = fread(&nAdditionalData, 1, sizeof(unsigned int), pFile);
+                if (!iLen) {
+                    throw new std::string("Read data failed!");
+                }
+                //  lesen
+                fseek(pFile, 0, SEEK_SET);
+                // WORD *, int
+                mImage = new unsigned char[iLen];
+                iLen = fread((void*)mImage, 1, iLen, pFile);
+                if (!iLen) {
+                    throw new std::string("Could not read data from file");
+                }
+                fclose(pFile);
+            }
+            else {
+                throw new std::string("Image File could not be opened");
+            }
             return true;
         }
 
@@ -81,7 +107,7 @@ extern "C" {
             if (mFilter.empty()) {
                 throw new std::string("Invalid filter coefficients");
             }
-            if (mImage == "") {
+            if (mImage == 0) {
                 throw new std::string("Invalid image source");
             }
 
@@ -89,9 +115,6 @@ extern "C" {
                 std::thread * first = new std::thread(ThreadRoutine, mFilter);
                 mWorkerThreads.push_back(first);
             }
-
-            mFilter.clear();
-            mImage = "";
         }
 
         void Filter::Stop() {
@@ -104,6 +127,10 @@ extern "C" {
                 if (mWorkerThreads.empty()) {
                     break;
                 }
+            }
+            if (mImage) {
+                delete[] mImage;
+                mImage = NULL;
             }
          }
 #ifdef __cplusplus

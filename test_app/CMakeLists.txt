@@ -28,3 +28,5 @@ ADD_EXECUTABLE(
 )
 
 TARGET_LINK_LIBRARIES( Test_Application Filter_Library )
+
+SET(CMAKE_CXX_FLAGS "-std=c++0x")

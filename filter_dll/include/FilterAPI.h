@@ -64,7 +64,7 @@ public:
 private:
     static std::vector<float> mFilter;
 
-    static std::string mImage;
+    static unsigned char * mImage;
 
     static unsigned int mNumThreads;
 
