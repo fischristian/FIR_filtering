@@ -29,4 +29,8 @@ ADD_EXECUTABLE(
 
 TARGET_LINK_LIBRARIES( Test_Application Filter_Library )
 
-SET(CMAKE_CXX_FLAGS "-std=c++0x")
+IF(UNIX)
+    SET(CMAKE_CXX_FLAGS "-pthread -std=c++0x")
+ELSE()
+    SET(CMAKE_CXX_FLAGS "-std=c++0x")
+ENDIF(UNIX)

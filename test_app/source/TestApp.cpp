@@ -1,11 +1,11 @@
 /* Copyright (C) 2015 Christian Fischer */
 #include <vector>
 #include <iostream>
+#include <chrono>
+
 #include "../include/TestApp.h"
 #include "../../filter_dll/include/FilterAPI.h"
 
-
-#include <chrono>
 
 #ifndef __linux
 #include <tchar.h>
@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
 #endif
 {
     try {
-        std::string sourceImage = "TestImage.dat";
+        std::string sourceImage = "C://Temp//Test_Image.dat";
         FilterAPI::Filter::loadImage(sourceImage);
 
 

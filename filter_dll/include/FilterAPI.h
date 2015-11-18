@@ -16,6 +16,8 @@
 #endif
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <thread>
 #include <string.h>
 #include <vector>

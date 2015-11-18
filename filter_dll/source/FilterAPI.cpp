@@ -1,5 +1,6 @@
 /* Copyright (C) 2015 Christian Fischer */
 
+#include <iomanip>
 #include "../include/FilterAPI.h"
 #include "../include/FilterStatistics.h"
 
@@ -89,33 +90,34 @@ extern "C" {
                 throw new std::string("Invalid Image source");
             }
             // std::cout << "Filter::loadImage called \n";
-            FILE * pFile = nullptr;
-#ifndef __linux
-            errno_t err = fopen_s(&pFile, source.c_str(), "r+b");
-#else
-            pFile = fopen(source.c_str(), "r+b");
-#endif
-            if (pFile != nullptr) {
-                //  lesen id
-                fseek(pFile, static_cast<int>(sizeof(unsigned int)) * (-1), SEEK_END);
-                unsigned int nAdditionalData = 0;
-                size_t iLen = fread(&nAdditionalData, 1, sizeof(unsigned int), pFile);
-                if (!iLen) {
-                    throw new std::string("Read data failed!");
-                }
-                //  lesen
-                fseek(pFile, 0, SEEK_SET);
-                // WORD *, int
-                mImage = new unsigned char[iLen];
-                iLen = fread((void*)mImage, 1, iLen, pFile);
-                if (!iLen) {
-                    throw new std::string("Could not read data from file");
-                }
-                fclose(pFile);
-            }
-            else {
+            std::ifstream myFile;
+            myFile.open(source.c_str(), std::ifstream::binary);
+            if (!myFile.is_open()) {
                 throw new std::string("Image File could not be opened");
             }
+            myFile.seekg(0, myFile.end);
+            size_t iSize = myFile.tellg();
+            if (iSize == 0) {
+                throw new std::string("Image File is empty");
+            }
+            myFile.seekg(0, myFile.beg);
+
+            char * charImageData = new char[iSize+1];
+            memset(charImageData, 0, iSize+1);
+            myFile.read((char*)charImageData, iSize);
+            // std::string sInput((char*)charImageData, iSize);
+
+            // charImageData contains ascii values of hex values
+            // goal: transform ascii to byte value and store it in mImage
+
+
+            std::cout << source.c_str() << " successfully opened\n" << std::endl;
+            std::cout << iSize << " Bytes successfully read\n" << std::endl;
+
+            delete[] charImageData;
+            charImageData = nullptr;
+            myFile.close();
+
             return true;
         }
 
