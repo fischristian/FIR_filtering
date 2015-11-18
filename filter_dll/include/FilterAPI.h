@@ -61,6 +61,14 @@ public:
     * \exception
     */
     static void Stop();
+
+   /* \fn         Stop
+    * \param
+    * \brief
+    * \return
+    * \exception
+    */
+    static long long getNumberOfPrcessedImages();
 private:
     static std::vector<float> mFilter;
 

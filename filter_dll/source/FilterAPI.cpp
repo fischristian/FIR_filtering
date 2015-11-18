@@ -1,6 +1,7 @@
 /* Copyright (C) 2015 Christian Fischer */
 
 #include "../include/FilterAPI.h"
+#include "../include/FilterStatistics.h"
 
         std::vector<float>FilterAPI::Filter::mFilter;
         unsigned char * FilterAPI::Filter::mImage = 0;
@@ -38,6 +39,9 @@ extern "C" {
             filtered[y] += original[y+i] * fircoeffs[i];
             */
             while (!bGlobalExit) {
+                // refresh filter_coefficients
+                // if filter_coefficients are changed, store resulting file with new name
+
                 int iNumCoff = test_coff.size();
                 for (int iPxl = 0; iPxl < ImageSize; ++iPxl) {
                     if ((iPxl % 640) < (640 - iNumCoff)) {
@@ -48,6 +52,7 @@ extern "C" {
                         }
                     }
                 }
+                FilterStatistics::IncreaseNumberOfProcessedImages();
             }
 
             delete[] pImage;
@@ -57,13 +62,24 @@ extern "C" {
         }
 
         void Filter::configureFilter(const std::vector<float>& vFilter, unsigned int uNumThreads) {
+            // std::cout << "Filter::setFilter called \n";
             if (vFilter.empty()){
                 throw new std::string("Filter coefficients are empty");
             }
             if (uNumThreads == 0){
                 throw new std::string("Number of threads is zero");
             }
-            std::cout << "Filter::setFilter called \n";
+            float fCoeffientSum = 0.0;
+            for (size_t i = 0; i < vFilter.size(); i++)
+            {
+                if (vFilter[i] < (float)0.0) {
+                    throw new std::string("Filter coefficients must be positive");
+                }
+                fCoeffientSum += vFilter[i];
+            }
+            if (fCoeffientSum > (float)1.01) {
+                throw new std::string("Sum of coefficients greater than 1.0 detected");
+            }
             Filter::mFilter = vFilter;
             mNumThreads = uNumThreads;
         }
@@ -133,6 +149,10 @@ extern "C" {
                 mImage = NULL;
             }
          }
+
+        long long Filter::getNumberOfPrcessedImages() {
+            return FilterStatistics::GetNumberOfProcessedImages();
+        }
 #ifdef __cplusplus
 }  //  namespace FilterAPI
 }  //  extern "C" {
