@@ -105,11 +105,32 @@ extern "C" {
             char * charImageData = new char[iSize+1];
             memset(charImageData, 0, iSize+1);
             myFile.read((char*)charImageData, iSize);
-            // std::string sInput((char*)charImageData, iSize);
+
+            mImage = new unsigned char[iSize / 2];
+            memset(mImage, 0, iSize/2);
 
             // charImageData contains ascii values of hex values
             // goal: transform ascii to byte value and store it in mImage
 
+            // ugly, but works.
+            for (size_t i = 0; i < iSize; i += 2)
+            {
+                char pChar1 = charImageData[i];
+                std::string s1(&pChar1, 1);
+                char pChar2 = charImageData[i+1];
+                std::string s2(&pChar2, 1);
+
+                std::stringstream stdS1(s1);
+                std::stringstream stdS2(s2);
+
+                int16_t Value1 = 0;
+                int16_t Value2 = 0;
+
+                stdS1 >> std::hex >> Value1;
+                stdS2 >> std::hex >> Value2;
+
+                mImage[i/2] = (unsigned char)((Value1 << 4) & 0xFF | Value2 & 0xFF);
+            }
 
             std::cout << source.c_str() << " successfully opened\n" << std::endl;
             std::cout << iSize << " Bytes successfully read\n" << std::endl;

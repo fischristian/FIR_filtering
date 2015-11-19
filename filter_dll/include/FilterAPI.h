@@ -36,7 +36,7 @@ public:
      * \param
      * \brief
      * \return
-     * \exception
+     * \exception std::string * ex if the filter coefficients are in sum > 1, length of filter coefficients or number of threads is zero
      */
     static void configureFilter(const std::vector<float>& vFilter, unsigned int uNumThreads);
 
@@ -44,7 +44,7 @@ public:
     * \param
     * \brief
     * \return
-    * \exception
+    * \exception std::string * ex if image file is invalid, or is empty
     */
     static bool loadImage(const std::string& source);
 
@@ -52,7 +52,7 @@ public:
     * \param
     * \brief
     * \return
-    * \exception
+    * \exception std::string * ex if filter and image was not initialized before
     */
     static void Start();
 
@@ -60,7 +60,7 @@ public:
     * \param
     * \brief
     * \return
-    * \exception
+    * \exception does not throw
     */
     static void Stop();
 
@@ -68,7 +68,7 @@ public:
     * \param
     * \brief
     * \return
-    * \exception
+    * \exception does not throw
     */
     static long long getNumberOfPrcessedImages();
 private:

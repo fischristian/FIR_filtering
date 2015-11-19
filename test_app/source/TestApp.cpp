@@ -16,7 +16,7 @@ int main(int argc, char* argv[])
 #endif
 {
     try {
-        std::string sourceImage = "C://Temp//Test_Image.dat";
+        std::string sourceImage = "C://temp//Test_Image.dat";
         FilterAPI::Filter::loadImage(sourceImage);
 
 
