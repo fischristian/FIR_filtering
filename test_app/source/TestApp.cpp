@@ -10,8 +10,30 @@ void printHelp() {
     std::cout << "Valid options: ..." << std::endl;
 }
 
+std::vector<float> getFilterCoefficients(const std::string& sUserInput){
+    
+    std::string delimiter = " ";
+    std::stringstream sRes(sUserInput);
+    std::vector<std::string>Svector;
+    std::string sTok;
+
+    while (std::getline(sRes, sTok, *delimiter.c_str())){
+        Svector.push_back(sTok);
+    }
+
+    std::vector<float>user_fCoeff;
+    for (size_t i = 0; i < Svector.size(); i++)
+    {
+        // atof has a no-throw guarantee. if the value is invalid, 0.0 will be set
+        user_fCoeff.push_back(atof(Svector[i].c_str()));
+    }
+
+    return user_fCoeff;
+}
+
 #ifndef __linux
 #include <tchar.h>
+#include <string>
 
 int _tmain(int argc, _TCHAR* argv[])
 #else
@@ -19,31 +41,39 @@ int main(int argc, char* argv[])
 #endif
 {
     try {
+        // only test purpose
+        std::string user_coeff = "0.1 0.2 0.5 0.2 0.1";
+
+        std::string sourceImage = "";
+        // std::string sourceImage = "C://temp//Test_Image.dat";
+
+        std::vector<float>user_fCoeff;
+
+        int iNumThreads = 0;
+
+
+        if (argc <= 1) {
+            std::cout << "No arguments passed. - Program in testmode with default parameters: .." << std::endl;
+        }
         if ((argc > 1) && argv[1]) {
             if (strcmp(argv[1], "h") == 0)
             {
                 printHelp;
             }
-            if (strcmp(argv[1], "file_name") == 0)
-            {
-            }
-            if (strcmp(argv[2], "filter_coeff") == 0)
-            {
-            }
-            if (strcmp(argv[3], "number of threads") == 0)
-            {
+            else {
+                sourceImage = argv[1];
             }
         }
-        else{
-            std::cout << "No arguments passed. - Program in testmode with default parameters: .." << std::endl;
+        if ((argc > 2) && argv[2]) {
+            user_fCoeff = getFilterCoefficients(argv[2]);
         }
-        std::string sourceImage = "C://temp//Test_Image.dat";
+        if ((argc > 3) && argv[3]) {
+            iNumThreads = atoi(argv[3]);
+        }
+
         FilterAPI::Filter::loadImage(sourceImage);
 
-
-        float OBE = (float)1 / (float)11;
-        std::vector<float>test_vector({ OBE, 2*OBE, 5*OBE, 2*OBE, 1*OBE });
-        FilterAPI::Filter::configureFilter(test_vector, 3);
+        FilterAPI::Filter::configureFilter(user_fCoeff, iNumThreads);
 
         std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
         FilterAPI::Filter::Start();
