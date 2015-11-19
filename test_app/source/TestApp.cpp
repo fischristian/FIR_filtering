@@ -6,6 +6,9 @@
 #include "../include/TestApp.h"
 #include "../../filter_dll/include/FilterAPI.h"
 
+void printHelp() {
+    std::cout << "Valid options: ..." << std::endl;
+}
 
 #ifndef __linux
 #include <tchar.h>
@@ -16,6 +19,24 @@ int main(int argc, char* argv[])
 #endif
 {
     try {
+        if ((argc > 1) && argv[1]) {
+            if (strcmp(argv[1], "h") == 0)
+            {
+                printHelp;
+            }
+            if (strcmp(argv[1], "file_name") == 0)
+            {
+            }
+            if (strcmp(argv[2], "filter_coeff") == 0)
+            {
+            }
+            if (strcmp(argv[3], "number of threads") == 0)
+            {
+            }
+        }
+        else{
+            std::cout << "No arguments passed. - Program in testmode with default parameters: .." << std::endl;
+        }
         std::string sourceImage = "C://temp//Test_Image.dat";
         FilterAPI::Filter::loadImage(sourceImage);
 
@@ -33,7 +54,10 @@ int main(int argc, char* argv[])
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
 
         std::cout << "Duration: " << duration << " µs\n";
-        std::cout << "OK";
+
+        std::cout << "Input any number to close the program:";
+        int endKey = 0;
+        std::cin >> endKey;
     }
     catch (std::string * ex){
         std::cout << "Exception caught: " << ex->c_str()  << "\n"

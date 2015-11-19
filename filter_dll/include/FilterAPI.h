@@ -44,6 +44,7 @@ public:
     * \param
     * \brief
     * \return
+    * \remark     File must be raw hex data, both lower / upper case possible; any non-hex value is ignored and substituted by 0
     * \exception std::string * ex if image file is invalid, or is empty
     */
     static bool loadImage(const std::string& source);

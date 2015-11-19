@@ -129,6 +129,7 @@ extern "C" {
                 stdS1 >> std::hex >> Value1;
                 stdS2 >> std::hex >> Value2;
 
+                // shift left value1 by 4 bit and add value2
                 mImage[i/2] = (unsigned char)((Value1 << 4) & 0xFF | Value2 & 0xFF);
             }
 
