@@ -11,6 +11,14 @@ namespace TestCases{
     bool TestFunction_01_Invalid_ImageSource();
 
     bool TestFunction_02_Invalid_ThreadNumber();
+
+    bool TestFunction_10_Performance_NumberOfThreads();
+
+    bool TestFunction_11_Performance_NumberOfCoefficients();
+
+    bool TestFunction_12_Performance_Duration();
+
+    bool TestFunction_13_Performance_ImageSize();
 }
 
 #endif // TESTCASES_H__

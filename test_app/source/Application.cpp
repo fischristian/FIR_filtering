@@ -87,6 +87,11 @@ void Application::RunMain(const std::string& ImageSource, const std::string& Fil
 
     std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
     FilterAPI::Filter::Start();
+    std::cout << "Threads started. Press any key to stop filtering..";
+    int endKey = 0;
+    while (endKey == 0){
+        std::cin >> endKey;
+    }
     FilterAPI::Filter::Stop();
     long long NumberOfProcessedImages = FilterAPI::Filter::getNumberOfPrcessedImages();
     std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
@@ -94,8 +99,5 @@ void Application::RunMain(const std::string& ImageSource, const std::string& Fil
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
 
     std::cout << "Duration: " << duration << " microsec\n";
-
-    std::cout << "Input any number to close the program:";
-    int endKey = 0;
-    std::cin >> endKey;
+    std::cout << "Processed Images: " << NumberOfProcessedImages << "\n";
 }
