@@ -6,6 +6,7 @@
 
         std::vector<float>FilterAPI::Filter::mFilter;
         unsigned char * FilterAPI::Filter::mImage = 0;
+        unsigned int FilterAPI::Filter::uImageSize = 0;
         unsigned int FilterAPI::Filter::mNumThreads = 0;
         std::vector<std::thread*> FilterAPI::Filter::mWorkerThreads;
 
@@ -20,13 +21,12 @@ extern "C" {
         void ThreadRoutine(std::vector<float>filter_coeff) {
             // create a test image:
             // height = 480, width = 640
-            int ImageSize = 480 * 640;
+            unsigned int ImageSize = FilterAPI::Filter::getImageSize();
             unsigned char * pImage = new unsigned char[ImageSize];
             for (int i = 0; i < ImageSize; ++i) {
                 pImage[i] = (unsigned char)(i % 255);
                 // std::cout << "pImage: " << pImage[i] << "\n";
             }
-            std::vector<float>test_coff(filter_coeff);
 
             unsigned char * pFilteredImage = new unsigned char[ImageSize];
             memset((void*)pFilteredImage, 0, ImageSize);
@@ -43,13 +43,11 @@ extern "C" {
                 // refresh filter_coefficients
                 // if filter_coefficients are changed, store resulting file with new name
 
-                int iNumCoff = test_coff.size();
+                int iNumCoff = filter_coeff.size();
                 for (int iPxl = 0; iPxl < ImageSize; ++iPxl) {
-                    if ((iPxl % 640) < (640 - iNumCoff)) {
-                        // std::cout << "Current Pixel: "<< (iPxl % 640) << " \n";
-                        // std::cout << "PixelValue = " << *(pImage + iPxl) << " \n";
+                    if (iPxl < (ImageSize - iNumCoff)) {
                         for (int i = 0; i < iNumCoff; ++i) {
-                            pFilteredImage[iPxl] += pImage[iPxl + i] * test_coff[i];
+                            pFilteredImage[iPxl] += pImage[iPxl + i] * filter_coeff[i];
                         }
                     }
                 }
@@ -108,6 +106,7 @@ extern "C" {
 
             mImage = new unsigned char[iSize / 2];
             memset(mImage, 0, iSize/2);
+            uImageSize = iSize / 2;
 
             // charImageData contains ascii values of hex values
             // goal: transform ascii to byte value and store it in mImage

@@ -72,10 +72,15 @@ public:
     * \exception does not throw
     */
     static long long getNumberOfPrcessedImages();
+
+    static unsigned int getImageSize() {
+        return uImageSize;}
 private:
     static std::vector<float> mFilter;
 
     static unsigned char * mImage;
+
+    static unsigned int uImageSize;
 
     static unsigned int mNumThreads;
 
