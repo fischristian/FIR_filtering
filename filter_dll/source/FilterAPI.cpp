@@ -13,23 +13,30 @@
         // std::thread does not provide a termination flag
         bool bGlobalExit = false;
 
+        struct ThreadSettings{
+            std::vector<float>filterCoeff;
+            unsigned char * pImage;
+            unsigned int uImageSize;
+        };
+
 #ifdef __cplusplus
 extern "C" {
     namespace FilterAPI {
 #endif
-
-        void ThreadRoutine(std::vector<float>filter_coeff) {
-            // create a test image:
-            // height = 480, width = 640
-            unsigned int ImageSize = FilterAPI::Filter::getImageSize();
-            unsigned char * pImage = new unsigned char[ImageSize];
-            for (int i = 0; i < ImageSize; ++i) {
-                pImage[i] = (unsigned char)(i % 255);
-                // std::cout << "pImage: " << pImage[i] << "\n";
+        void ThreadRoutine(const ThreadSettings & Settings) {
+            std::vector<float>filter_coeff = Settings.filterCoeff;
+            unsigned int ImageSize = Settings.uImageSize;
+            unsigned char * pFilteredImage = nullptr;
+            try {
+                pFilteredImage = new unsigned char[ImageSize];
             }
-
-            unsigned char * pFilteredImage = new unsigned char[ImageSize];
+            catch (...){
+                std::cout << "ThreadRoutine error: could not allocate memory for resulting image" << std::endl;
+                return;
+            }
             memset((void*)pFilteredImage, 0, ImageSize);
+
+            unsigned char * pImage = Settings.pImage;
 
             /*
             fircoeffs = { 1/11, 2/11, 5/11, 2/11, 1/11 }; // for example
@@ -54,12 +61,10 @@ extern "C" {
                 FilterStatistics::IncreaseNumberOfProcessedImages();
             }
 
-            delete[] pImage;
-            pImage = NULL;
             delete[] pFilteredImage;
             pFilteredImage = NULL;
         }
-
+/*****************************************************************************/
         void Filter::configureFilter(const std::vector<float>& vFilter, unsigned int uNumThreads) {
             // std::cout << "Filter::setFilter called \n";
             if (vFilter.empty()){
@@ -82,7 +87,7 @@ extern "C" {
             Filter::mFilter = vFilter;
             mNumThreads = uNumThreads;
         }
-
+/*****************************************************************************/
         bool Filter::loadImage(const std::string& source) {
             if (source == ""){
                 throw new std::string("Invalid Image source");
@@ -100,12 +105,29 @@ extern "C" {
             }
             myFile.seekg(0, myFile.beg);
 
-            char * charImageData = new char[iSize+1];
-            memset(charImageData, 0, iSize+1);
+            char * charImageData = nullptr;
+            try{
+                charImageData = new char[iSize + 1];
+            }
+            catch (...){
+                throw new std::string("Could not allocate memory to read Image file");
+            }
+            memset(charImageData, 0, iSize + 1);
             myFile.read((char*)charImageData, iSize);
 
-            mImage = new unsigned char[iSize / 2];
-            memset(mImage, 0, iSize/2);
+            // Reset Image memory, if it was already initialized
+            if (mImage != nullptr) {
+                delete[] mImage;
+                mImage = nullptr;
+            }
+
+            try{
+                mImage = new unsigned char[iSize / 2];
+            }
+            catch (...){
+                throw new std::string("Could not allocate memory to store Image file");
+            }
+            memset(mImage, 0, iSize / 2);
             uImageSize = iSize / 2;
 
             // charImageData contains ascii values of hex values
@@ -141,7 +163,7 @@ extern "C" {
 
             return true;
         }
-
+/*****************************************************************************/
         void Filter::Start() {
             if (mFilter.empty()) {
                 throw new std::string("Invalid filter coefficients");
@@ -150,12 +172,18 @@ extern "C" {
                 throw new std::string("Invalid image source");
             }
 
+            ThreadSettings mSettings;
+            memset(&mSettings, 0, sizeof(ThreadSettings));
+            mSettings.filterCoeff = Filter::mFilter;
+            mSettings.pImage = Filter::mImage;
+            mSettings.uImageSize = Filter::uImageSize;
+
             for (int i = 0; i < mNumThreads; ++i){
-                std::thread * first = new std::thread(ThreadRoutine, mFilter);
+                std::thread * first = new std::thread(ThreadRoutine, mSettings);
                 mWorkerThreads.push_back(first);
             }
         }
-
+/*****************************************************************************/
         void Filter::Stop() {
             bGlobalExit = true;
             while (!mWorkerThreads.empty()) {
@@ -172,7 +200,7 @@ extern "C" {
                 mImage = NULL;
             }
          }
-
+/*****************************************************************************/
         long long Filter::getNumberOfPrcessedImages() {
             return FilterStatistics::GetNumberOfProcessedImages();
         }
