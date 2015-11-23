@@ -25,7 +25,17 @@ namespace DefaultSettings {
 }
 
 void Application::printHelp() {
-    std::cout << "Valid options: ..." << std::endl;
+    std::cout << "Valid options:" << std::endl;
+    std::cout << std::endl;
+    std::cout << " 'h'" << std::endl;
+    std::cout << "   - read help \n\n" << std::endl;
+    std::cout << " 'test'" << std::endl;
+    std::cout << "   - execute program in test mode \n\n" << std::endl;
+    std::cout << " 'arg1 arg2 arg3'" << std::endl;
+    std::cout << "   - arg1: Image source, e.g. C:\\temp\\myImage.bin" << std::endl;
+    std::cout << "   - arg2: filter coefficients separated by ';', e.g. 0.1;0.2;0.1" << std::endl;
+    std::cout << "   - arg3: number of threads > 0, e.g. 5 \n\n" << std::endl;
+    std::cout << std::endl << std::endl;
 }
 
 std::vector<float> getFilterCoefficients(const std::string& sUserInput){

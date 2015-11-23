@@ -13,6 +13,12 @@ int _tmain(int argc, _TCHAR* argv[])
 int main(int argc, char* argv[])
 #endif
 {
+    std::cout << std::endl;
+    std::cout << "############################################" << std::endl;
+    std::cout << "# FIR_Filtering Test Application           #" << std::endl;
+    std::cout << "############################################" << std::endl;
+    std::cout << std::endl << std::endl;
+
     try {
         if (argc <= 1) {
             std::cout << "No arguments passed. Call with 'h' to see help menu." << std::endl;
