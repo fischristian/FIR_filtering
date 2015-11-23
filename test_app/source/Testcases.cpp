@@ -109,10 +109,10 @@ bool TestCases::TestFunction_00_Invalid_Fir_Coefficients() {
         // ok by design
     }
     if (bReturn) {
-        std::cout << __FUNCTION__ << " - passed";
+        std::cout << __FUNCTION__ << " - passed\n\n";
     }
     else {
-        std::cout << __FUNCTION__ << " - failed";
+        std::cout << __FUNCTION__ << " - failed\n\n";
     }
     return bReturn;
 }
@@ -139,10 +139,10 @@ bool TestCases::TestFunction_01_Invalid_ImageSource() {
         // ok by design
     }
     if (bReturn) {
-        std::cout << __FUNCTION__ << " - passed";
+        std::cout << __FUNCTION__ << " - passed\n\n";
     }
     else {
-        std::cout << __FUNCTION__ << " - failed";
+        std::cout << __FUNCTION__ << " - failed\n\n";
     }
     return bReturn;
 }
@@ -160,10 +160,10 @@ bool TestCases::TestFunction_02_Invalid_ThreadNumber() {
         // ok by design
     }
     if (bReturn) {
-        std::cout << __FUNCTION__ << " - passed";
+        std::cout << __FUNCTION__ << " - passed\n\n";
     }
     else {
-        std::cout << __FUNCTION__ << " - failed";
+        std::cout << __FUNCTION__ << " - failed\n\n";
     }
     return bReturn;
 }
@@ -221,10 +221,10 @@ bool TestCases::TestFunction_10_Performance_NumberOfThreads() {
         pImage = nullptr;
     }
     if (bReturn) {
-        std::cout << __FUNCTION__ << " - passed";
+        std::cout << __FUNCTION__ << " - passed\n\n";
     }
     else {
-        std::cout << __FUNCTION__ << " - failed";
+        std::cout << __FUNCTION__ << " - failed\n\n";
     }
     return bReturn;
 }
@@ -287,10 +287,10 @@ bool TestCases::TestFunction_11_Performance_NumberOfCoefficients() {
         pImage = nullptr;
     }
     if (bReturn) {
-        std::cout << __FUNCTION__ << " - passed";
+        std::cout << __FUNCTION__ << " - passed\n\n";
     }
     else {
-        std::cout << __FUNCTION__ << " - failed";
+        std::cout << __FUNCTION__ << " - failed\n\n";
     }
     return bReturn;
 }
@@ -349,10 +349,10 @@ bool TestCases::TestFunction_12_Performance_Duration() {
         pImage = nullptr;
     }
     if (bReturn) {
-        std::cout << __FUNCTION__ << " - passed";
+        std::cout << __FUNCTION__ << " - passed\n\n";
     }
     else {
-        std::cout << __FUNCTION__ << " - failed";
+        std::cout << __FUNCTION__ << " - failed\n\n";
     }
     return bReturn;
 }
@@ -414,10 +414,10 @@ bool TestCases::TestFunction_13_Performance_ImageSize() {
         }
     }
     if (bReturn) {
-        std::cout << __FUNCTION__ << " - passed";
+        std::cout << __FUNCTION__ << " - passed\n\n";
     }
     else {
-        std::cout << __FUNCTION__ << " - failed";
+        std::cout << __FUNCTION__ << " - failed\n\n";
     }
     return bReturn;
 }
