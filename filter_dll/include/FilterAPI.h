@@ -66,6 +66,8 @@ public:
     */
     static long long getNumberOfPrcessedImages();
 
+    static void Release();
+
 private:
     static std::vector<float> mFilter;
 

@@ -20,11 +20,13 @@ int main(int argc, char* argv[])
         if ((argc > 1) && argv[1]) {
             if (strcmp(argv[1], "h") == 0)
             {
+                std::cout << "Help: \n" << std::endl;
                 Application::printHelp();
                 return 0;
             }
             else if (strcmp(argv[1], "test") == 0)
             {
+                std::cout << "Executing in test mode..Running all tests \n" << std::endl;
                 TestCases::RunAllTests();
                 return 0;
             }

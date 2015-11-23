@@ -2,6 +2,20 @@
 #ifndef TESTCASES_H__
 #define TESTCASES_H__
 
+#include <stdio.h>
+#ifdef _WIN32
+    #include <direct.h>
+    #define GetCurrentDir _getcwd
+#else
+    #include <unistd.h>
+    #define GetCurrentDir getcwd
+#endif
+
+#define DEFAULT_IMAGE_SIZE 1024*1024
+
+#define DEFAULT_IMAGE_NAME "\\TestImage.bin"
+
+#define DEFAULT_NUMBER_OF_THREADS 3
 
 namespace TestCases{
     void RunAllTests();

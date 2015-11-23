@@ -84,9 +84,8 @@ void Application::RunMain(const std::string& ImageSource, const std::string& Fil
 
     FilterAPI::Filter::configureFilter(user_fCoeff, iNumThreads);
 
-
-    std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
     FilterAPI::Filter::Start();
+    std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
     std::cout << "Threads started. Press any key to stop filtering..";
     int endKey = 0;
     while (endKey == 0){
@@ -100,4 +99,5 @@ void Application::RunMain(const std::string& ImageSource, const std::string& Fil
 
     std::cout << "Duration: " << duration << " microsec\n";
     std::cout << "Processed Images: " << NumberOfProcessedImages << "\n";
+    FilterAPI::Filter::Release();
 }

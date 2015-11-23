@@ -1,6 +1,7 @@
 /* Copyright (C) 2015 Christian Fischer */
 
 #include <iomanip>
+#include <algorithm>
 #include "../include/FilterAPI.h"
 #include "../include/FilterStatistics.h"
 
@@ -70,6 +71,9 @@ extern "C" {
             if (vFilter.empty()){
                 throw new std::string("Filter coefficients are empty");
             }
+            if (std::all_of(vFilter.begin(), vFilter.end(), [](float i){return i == 0.0; })) {
+                throw new std::string("Filter coefficients are all zero");
+            }
             if (uNumThreads == 0){
                 throw new std::string("Number of threads is zero");
             }
@@ -81,7 +85,7 @@ extern "C" {
                 }
                 fCoeffientSum += vFilter[i];
             }
-            if (fCoeffientSum > (float)1.01) {
+            if (fCoeffientSum > (float)1.001) {
                 throw new std::string("Sum of coefficients greater than 1.0 detected");
             }
             Filter::mFilter = vFilter;
@@ -165,6 +169,8 @@ extern "C" {
         }
 /*****************************************************************************/
         void Filter::Start() {
+            bGlobalExit = false;
+            FilterStatistics::ResetNumberOfProcessedImages();
             if (mFilter.empty()) {
                 throw new std::string("Invalid filter coefficients");
             }
@@ -195,11 +201,14 @@ extern "C" {
                     break;
                 }
             }
+         }
+/*****************************************************************************/
+        void Filter::Release() {
             if (mImage) {
                 delete[] mImage;
-                mImage = NULL;
+                mImage = nullptr;
             }
-         }
+        }
 /*****************************************************************************/
         long long Filter::getNumberOfPrcessedImages() {
             return FilterStatistics::GetNumberOfProcessedImages();
