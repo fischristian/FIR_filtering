@@ -5,20 +5,20 @@
 #include "../include/FilterAPI.h"
 #include "../include/FilterStatistics.h"
 
-        std::vector<float>FilterAPI::Filter::mFilter;
-        unsigned char * FilterAPI::Filter::mImage = 0;
-        unsigned int FilterAPI::Filter::uImageSize = 0;
-        unsigned int FilterAPI::Filter::mNumThreads = 0;
-        std::vector<std::thread*> FilterAPI::Filter::mWorkerThreads;
+std::vector<float>FilterAPI::Filter::mFilter;
+unsigned char * FilterAPI::Filter::mImage = 0;
+unsigned int FilterAPI::Filter::uImageSize = 0;
+unsigned int FilterAPI::Filter::mNumThreads = 0;
+std::vector<std::thread*> FilterAPI::Filter::mWorkerThreads;
 
-        // std::thread does not provide a termination flag
-        bool bGlobalExit = false;
+// std::thread does not provide a termination flag
+bool bGlobalExit = false;
 
-        struct ThreadSettings{
-            std::vector<float>filterCoeff;
-            unsigned char * pImage;
-            unsigned int uImageSize;
-        };
+struct ThreadSettings{
+    std::vector<float>filterCoeff;
+    unsigned char * pImage;
+    unsigned int uImageSize;
+};
 
 #ifdef __cplusplus
 extern "C" {
@@ -48,9 +48,6 @@ extern "C" {
             filtered[y] += original[y+i] * fircoeffs[i];
             */
             while (!bGlobalExit) {
-                // refresh filter_coefficients
-                // if filter_coefficients are changed, store resulting file with new name
-
                 int iNumCoff = filter_coeff.size();
                 for (int iPxl = 0; iPxl < ImageSize; ++iPxl) {
                     if (iPxl < (ImageSize - iNumCoff)) {
@@ -61,11 +58,10 @@ extern "C" {
                 }
                 FilterStatistics::IncreaseNumberOfProcessedImages();
             }
-
             delete[] pFilteredImage;
             pFilteredImage = NULL;
         }
-/*****************************************************************************/
+        /*****************************************************************************/
         void Filter::configureFilter(const std::vector<float>& vFilter, unsigned int uNumThreads) {
             // std::cout << "Filter::setFilter called \n";
             if (vFilter.empty()){
@@ -91,7 +87,7 @@ extern "C" {
             Filter::mFilter = vFilter;
             mNumThreads = uNumThreads;
         }
-/*****************************************************************************/
+        /*****************************************************************************/
         bool Filter::loadImage(const std::string& source) {
             if (source == ""){
                 throw new std::string("Invalid Image source");
@@ -167,7 +163,7 @@ extern "C" {
 
             return true;
         }
-/*****************************************************************************/
+        /*****************************************************************************/
         void Filter::Start() {
             bGlobalExit = false;
             FilterStatistics::ResetNumberOfProcessedImages();
@@ -189,7 +185,7 @@ extern "C" {
                 mWorkerThreads.push_back(first);
             }
         }
-/*****************************************************************************/
+        /*****************************************************************************/
         void Filter::Stop() {
             bGlobalExit = true;
             while (!mWorkerThreads.empty()) {
@@ -202,14 +198,14 @@ extern "C" {
                 }
             }
          }
-/*****************************************************************************/
+        /*****************************************************************************/
         void Filter::Release() {
             if (mImage) {
                 delete[] mImage;
                 mImage = nullptr;
             }
         }
-/*****************************************************************************/
+        /*****************************************************************************/
         long long Filter::getNumberOfPrcessedImages() {
             return FilterStatistics::GetNumberOfProcessedImages();
         }

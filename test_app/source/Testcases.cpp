@@ -15,7 +15,7 @@ std::string CurrentPath() {
     }
     return std::string(cCurrentpath);
 }
-
+/*****************************************************************************/
 unsigned char * CreateTestImage(size_t uImageSize) {
     // create a test image with the given size
     unsigned char * pTestImage = nullptr;
@@ -34,7 +34,7 @@ unsigned char * CreateTestImage(size_t uImageSize) {
     }
     return pTestImage;
 }
-
+/*****************************************************************************/
 void TestCases::RunAllTests() {
     unsigned int uNumErrors = 0;
     
@@ -68,7 +68,7 @@ void TestCases::RunAllTests() {
 
     std::cout << "All Tests finished. " << uNumErrors << " failed." << std::endl;
 }
-
+/*****************************************************************************/
 bool TestCases::TestFunction_00_Invalid_Fir_Coefficients() {
     std::cout << "Run " << __FUNCTION__ << std::endl;
     bool bReturn = true;
@@ -116,7 +116,7 @@ bool TestCases::TestFunction_00_Invalid_Fir_Coefficients() {
     }
     return bReturn;
 }
-
+/*****************************************************************************/
 bool TestCases::TestFunction_01_Invalid_ImageSource() {
     std::cout << "Run " << __FUNCTION__ << std::endl;
     bool bReturn = true;
@@ -146,7 +146,7 @@ bool TestCases::TestFunction_01_Invalid_ImageSource() {
     }
     return bReturn;
 }
-
+/*****************************************************************************/
 bool TestCases::TestFunction_02_Invalid_ThreadNumber() {
     std::cout << "Run " << __FUNCTION__ << std::endl;
     bool bReturn = true;
@@ -167,7 +167,7 @@ bool TestCases::TestFunction_02_Invalid_ThreadNumber() {
     }
     return bReturn;
 }
-
+/*****************************************************************************/
 bool TestCases::TestFunction_10_Performance_NumberOfThreads() {
     std::cout << "Run " << __FUNCTION__ << std::endl;
     // for i = 1...10 threads and fixed coefficients & image & time compare number of output images
@@ -228,7 +228,7 @@ bool TestCases::TestFunction_10_Performance_NumberOfThreads() {
     }
     return bReturn;
 }
-
+/*****************************************************************************/
 bool TestCases::TestFunction_11_Performance_NumberOfCoefficients() {
     std::cout << "Run " << __FUNCTION__ << std::endl;
     // for i = 1...10 number of coefficients & fixed threads & image & fixed time compare number of output images
@@ -294,7 +294,7 @@ bool TestCases::TestFunction_11_Performance_NumberOfCoefficients() {
     }
     return bReturn;
 }
-
+/*****************************************************************************/
 bool TestCases::TestFunction_12_Performance_Duration() {
     std::cout << "Run " << __FUNCTION__ << std::endl;
     // for variable time & fixed threads and fixed coefficients & fixed image size compare number of output images
@@ -356,7 +356,7 @@ bool TestCases::TestFunction_12_Performance_Duration() {
     }
     return bReturn;
 }
-
+/*****************************************************************************/
 bool TestCases::TestFunction_13_Performance_ImageSize() {
     std::cout << "Run " << __FUNCTION__ << std::endl;
     // for variable image size & fixed threads and fixed coefficients & fixed time compare number of output images

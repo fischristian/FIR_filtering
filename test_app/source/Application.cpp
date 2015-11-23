@@ -23,7 +23,7 @@ namespace DefaultSettings {
     */
     std::vector<float>Filter_Coefficients({ 0.5, 0.5 });
 }
-
+/*****************************************************************************/
 void Application::printHelp() {
     std::cout << "Valid options:" << std::endl;
     std::cout << std::endl;
@@ -37,7 +37,7 @@ void Application::printHelp() {
     std::cout << "   - arg3: number of threads > 0, e.g. 5 \n\n" << std::endl;
     std::cout << std::endl << std::endl;
 }
-
+/*****************************************************************************/
 std::vector<float> getFilterCoefficients(const std::string& sUserInput){
     std::string delimiter = DefaultSettings::Delimiter;
     // convert string to stringstream
@@ -61,7 +61,7 @@ std::vector<float> getFilterCoefficients(const std::string& sUserInput){
 
     return user_fCoeff;
 }
-
+/*****************************************************************************/
 void Application::RunMain(const std::string& ImageSource, const std::string& Filter_Coeff, const std::string& Num_Threads) {
     std::vector<float>user_fCoeff;
     int iNumThreads = 0;
@@ -70,7 +70,8 @@ void Application::RunMain(const std::string& ImageSource, const std::string& Fil
     }
     catch (std::string * ex){
         std::cout << "Exception caught: " << ex->c_str() << "\n " << std::endl;
-        std::cout << "Default image will be used instead: " << std::endl;
+        std::cout << "Input a valid image file." << std::endl;
+        return;
     }
     if (Filter_Coeff != "") {
         user_fCoeff = getFilterCoefficients(Filter_Coeff);
