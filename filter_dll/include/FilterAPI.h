@@ -66,6 +66,12 @@ public:
     */
     static long long getNumberOfPrcessedImages();
 
+   /* \fn        Release
+    * \param     none
+    * \brief     Release internally used resources
+    * \return    none
+    * \exception does not throw
+    */
     static void Release();
 
 private:

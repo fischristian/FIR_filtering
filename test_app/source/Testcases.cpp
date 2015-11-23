@@ -70,6 +70,7 @@ void TestCases::RunAllTests() {
 }
 
 bool TestCases::TestFunction_00_Invalid_Fir_Coefficients() {
+    std::cout << "Run " << __FUNCTION__ << std::endl;
     bool bReturn = true;
     try{
         std::vector<float>test00{};
@@ -107,10 +108,17 @@ bool TestCases::TestFunction_00_Invalid_Fir_Coefficients() {
     catch (std::string * ex) {
         // ok by design
     }
+    if (bReturn) {
+        std::cout << __FUNCTION__ << " - passed";
+    }
+    else {
+        std::cout << __FUNCTION__ << " - failed";
+    }
     return bReturn;
 }
 
 bool TestCases::TestFunction_01_Invalid_ImageSource() {
+    std::cout << "Run " << __FUNCTION__ << std::endl;
     bool bReturn = true;
     try{
         std::string ImageSource00 = "";
@@ -130,10 +138,17 @@ bool TestCases::TestFunction_01_Invalid_ImageSource() {
     catch (std::string * ex) {
         // ok by design
     }
+    if (bReturn) {
+        std::cout << __FUNCTION__ << " - passed";
+    }
+    else {
+        std::cout << __FUNCTION__ << " - failed";
+    }
     return bReturn;
 }
 
 bool TestCases::TestFunction_02_Invalid_ThreadNumber() {
+    std::cout << "Run " << __FUNCTION__ << std::endl;
     bool bReturn = true;
     try{
         std::vector<float>test00{(float)0.1};
@@ -144,10 +159,17 @@ bool TestCases::TestFunction_02_Invalid_ThreadNumber() {
     catch (std::string * ex) {
         // ok by design
     }
+    if (bReturn) {
+        std::cout << __FUNCTION__ << " - passed";
+    }
+    else {
+        std::cout << __FUNCTION__ << " - failed";
+    }
     return bReturn;
 }
 
 bool TestCases::TestFunction_10_Performance_NumberOfThreads() {
+    std::cout << "Run " << __FUNCTION__ << std::endl;
     // for i = 1...10 threads and fixed coefficients & image & time compare number of output images
     bool bReturn = true;
     unsigned char * pImage = CreateTestImage(DEFAULT_IMAGE_SIZE);
@@ -188,16 +210,27 @@ bool TestCases::TestFunction_10_Performance_NumberOfThreads() {
         std::cout << "Number of threads: " << iNumThreads << "; Execution time: " << duration << "; Processed Iamges: " << NumberOfProcessedImages << "\n" << std::endl;
     }
 
+    TestImage.close();
+    if (remove(sPath.c_str()) != 0) {
+        std::cout << "Could not remove the created Test image \n" << std::endl;
+    }
     FilterAPI::Filter::Release();
 
     if (pImage) {
         delete[] pImage;
         pImage = nullptr;
     }
+    if (bReturn) {
+        std::cout << __FUNCTION__ << " - passed";
+    }
+    else {
+        std::cout << __FUNCTION__ << " - failed";
+    }
     return bReturn;
 }
 
 bool TestCases::TestFunction_11_Performance_NumberOfCoefficients() {
+    std::cout << "Run " << __FUNCTION__ << std::endl;
     // for i = 1...10 number of coefficients & fixed threads & image & fixed time compare number of output images
     bool bReturn = true;
     unsigned char * pImage = CreateTestImage(DEFAULT_IMAGE_SIZE);
@@ -244,14 +277,26 @@ bool TestCases::TestFunction_11_Performance_NumberOfCoefficients() {
 
     FilterAPI::Filter::Release();
 
+    TestImage.close();
+    if (remove(sPath.c_str()) != 0) {
+        std::cout << "Could not remove the created Test image \n" << std::endl;
+    }
+
     if (pImage) {
         delete[] pImage;
         pImage = nullptr;
+    }
+    if (bReturn) {
+        std::cout << __FUNCTION__ << " - passed";
+    }
+    else {
+        std::cout << __FUNCTION__ << " - failed";
     }
     return bReturn;
 }
 
 bool TestCases::TestFunction_12_Performance_Duration() {
+    std::cout << "Run " << __FUNCTION__ << std::endl;
     // for variable time & fixed threads and fixed coefficients & fixed image size compare number of output images
     bool bReturn = true;
     unsigned char * pImage = CreateTestImage(DEFAULT_IMAGE_SIZE);
@@ -294,21 +339,32 @@ bool TestCases::TestFunction_12_Performance_Duration() {
 
     FilterAPI::Filter::Release();
 
+    TestImage.close();
+    if (remove(sPath.c_str()) != 0) {
+        std::cout << "Could not remove the created Test image \n" << std::endl;
+    }
+
     if (pImage) {
         delete[] pImage;
         pImage = nullptr;
+    }
+    if (bReturn) {
+        std::cout << __FUNCTION__ << " - passed";
+    }
+    else {
+        std::cout << __FUNCTION__ << " - failed";
     }
     return bReturn;
 }
 
 bool TestCases::TestFunction_13_Performance_ImageSize() {
+    std::cout << "Run " << __FUNCTION__ << std::endl;
     // for variable image size & fixed threads and fixed coefficients & fixed time compare number of output images
     bool bReturn = true;
     std::vector<float>Filter_Coefficients = { (float)0.5, (float)0.5 };    
 
     for (size_t iImageSize = 100; bReturn == true && iImageSize <= 1000; iImageSize += 100)
     {
-
         unsigned char * pImage = CreateTestImage(DEFAULT_IMAGE_SIZE);
         std::string sPath = CurrentPath();
         sPath.append(DEFAULT_IMAGE_NAME);
@@ -346,10 +402,22 @@ bool TestCases::TestFunction_13_Performance_ImageSize() {
             << "; Processed Iamges: " << NumberOfProcessedImages << "\n" << std::endl;
 
         FilterAPI::Filter::Release();
+
+        TestImage.close();
+        if (remove(sPath.c_str()) != 0) {
+            std::cout << "Could not remove the created Test image \n" << std::endl;
+        }
+
         if (pImage) {
             delete[] pImage;
             pImage = nullptr;
         }
+    }
+    if (bReturn) {
+        std::cout << __FUNCTION__ << " - passed";
+    }
+    else {
+        std::cout << __FUNCTION__ << " - failed";
     }
     return bReturn;
 }

@@ -47,5 +47,7 @@ int main(int argc, char* argv[])
     catch (std::string * ex){
         std::cout << "Exception caught: " << ex->c_str()  << "\n"
             << "Programm terminating." << std::endl;
+        return -1;
     }
+    return 0;
 }
