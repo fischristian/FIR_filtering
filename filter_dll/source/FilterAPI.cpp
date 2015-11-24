@@ -2,6 +2,7 @@
 
 #include <iomanip>
 #include <algorithm>
+#include <mutex>
 #include "../include/FilterAPI.h"
 #include "../include/FilterStatistics.h"
 
@@ -21,6 +22,8 @@ unsigned int FilterAPI::Filter::mNumThreads = 0;
 bool FilterAPI::Filter::bTerminateFlag = false;
 bool FilterAPI::Filter::bSettingsChanged = true;
 std::vector<std::thread*> FilterAPI::Filter::mWorkerThreads;
+
+std::mutex coefficients_lock;
 
 std::string CurrentPath() {
     char cCurrentpath[FILENAME_MAX];
@@ -58,8 +61,10 @@ extern "C" {
             if (fCoeffientSum > (float)1.001) {
                 throw new std::string("Sum of coefficients greater than 1.0 detected");
             }
+            coefficients_lock.lock();
             Filter::mFilter = vFilter;
             mNumThreads = uNumThreads;
+            coefficients_lock.unlock();
         }
         /*****************************************************************************/
         bool Filter::loadImage(const std::string& source) {
@@ -80,6 +85,7 @@ extern "C" {
             myFile.seekg(0, myFile.beg);
 
             // Reset Image memory, if it was already initialized
+            coefficients_lock.lock();
             if (mImage != nullptr) {
                 delete[] mImage;
                 mImage = nullptr;
@@ -90,11 +96,14 @@ extern "C" {
             }
             catch (...){
                 throw new std::string("Could not allocate memory to store Image file");
+                coefficients_lock.unlock();
             }
             memset(mImage, 0, iSize);
             myFile.read((char*)mImage, iSize);
 
             uImageSize = static_cast<unsigned int>(iSize);
+
+            coefficients_lock.unlock();
             
             std::cout << source.c_str() << " successfully opened\n" << std::endl;
             std::cout << iSize << " Bytes successfully read\n" << std::endl;
@@ -173,18 +182,27 @@ extern "C" {
             if 'y+i' is in the original image boundaries:
             filtered[y] += original[y+i] * fircoeffs[i];
             */
+
+            // keep filter coefficients and image / imagesize threadsafe
+            // yet not be modifiable during filtering algorithm
+            coefficients_lock.lock();
+            std::vector<float>tmpFilter = mFilter;
+            unsigned char * tmpImage = mImage;
+            unsigned int tmpImageSIze = uImageSize;
+            coefficients_lock.unlock();
+
             while (!bTerminateFlag) {
-                size_t iNumCoff = mFilter.size();
-                for (unsigned int iPxl = 0; iPxl < uImageSize; ++iPxl) {
-                    if (iPxl < (uImageSize - iNumCoff)) {
+                size_t iNumCoff = tmpFilter.size();
+                for (unsigned int iPxl = 0; iPxl < tmpImageSIze; ++iPxl) {
+                    if (iPxl < (tmpImageSIze - iNumCoff)) {
                         for (int i = 0; i < iNumCoff; ++i) {
-                            pFilteredImage[iPxl] += static_cast<unsigned char>(static_cast<float>(mImage[iPxl + i]) * mFilter[i]);
+                            pFilteredImage[iPxl] += static_cast<unsigned char>(static_cast<float>(tmpImage[iPxl + i]) * tmpFilter[i]);
                         }
                     }
                 }
                 FilterStatistics::IncreaseNumberOfProcessedImages();
                 if (bSettingsChanged) {
-                    TestImage.write((const char*)pFilteredImage, uImageSize);
+                    TestImage.write((const char*)pFilteredImage, tmpImageSIze);
                     bSettingsChanged = false;
                 }
             }
