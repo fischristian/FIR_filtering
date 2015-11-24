@@ -64,7 +64,7 @@
 - CMake Version 2.8.9
 - c++11 compatible compiler
   // testet with VS2013, gcc 4.8.2
-- Images must be a binary file with 8 Bit grey-value each pixel
+- Images must be a binary file with 8 Bit grey-value each pixel, no image-header or other format
 
 3. HOW TO INSTALL
 ###################################

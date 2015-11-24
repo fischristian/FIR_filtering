@@ -9,4 +9,6 @@ Outlook to further improvements / ideas:
 
 - more elaborated user menu (or even gui?)
 
+- open any kind of image file using 3rd party libraries: CImg, Qt to open jpg e.g.
+
 - using doxygen for html/xml/.. code documentation
