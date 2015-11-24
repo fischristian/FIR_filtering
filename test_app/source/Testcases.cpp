@@ -29,7 +29,7 @@ unsigned char * CreateTestImage(size_t uImageSize) {
         memset((void*)pTestImage, 0, uImageSize);
         for (size_t i = 0; i < uImageSize; i++)
         {
-            pTestImage[i] = (i % 255);
+            pTestImage[i] = ((i % 5) * 50);
         }
     }
     return pTestImage;
