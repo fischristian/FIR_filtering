@@ -97,18 +97,18 @@ void Application::RunMain(const std::string& ImageSource, const std::string& Fil
 
     FilterAPI::Filter::Start();
     std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-    std::cout << "Threads started. Press any key to stop filtering..";
+    std::cout << "Thread(s) started. Press any key to stop filtering..\n";
     int endKey = 0;
     while (endKey == 0){
         std::cin >> endKey;
     }
+    std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
     FilterAPI::Filter::Stop();
     long long NumberOfProcessedImages = FilterAPI::Filter::getNumberOfPrcessedImages();
-    std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
 
     auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
 
-    std::cout << "Duration: " << duration << " microsec\n";
+    std::cout << "Duration: " << duration << " microseconds\n";
     std::cout << "Processed Images: " << NumberOfProcessedImages << "\n";
     FilterAPI::Filter::Release();
 }

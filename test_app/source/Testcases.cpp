@@ -180,54 +180,60 @@ bool TestCases::TestFunction_10_Performance_NumberOfThreads() {
     // for i = 1...10 threads and fixed coefficients & image & time compare number of output images
     bool bReturn = true;
     unsigned char * pImage = CreateTestImage(DEFAULT_IMAGE_SIZE);
-    std::string sPath = CurrentPath();
-    sPath.append(DEFAULT_IMAGE_NAME);
-    std::ofstream TestImage;
-    TestImage.open(sPath, std::ios::out | std::ios::binary);
-    TestImage.write((const char*)pImage, DEFAULT_IMAGE_SIZE);
-    std::vector<float>Filter_Coefficients = { (float)0.5, (float)0.5 };
+    if (pImage != nullptr) {
+        std::string sPath = CurrentPath();
+        sPath.append(DEFAULT_IMAGE_NAME);
+        std::ofstream TestImage;
+        TestImage.open(sPath, std::ios::out | std::ios::binary);
+        TestImage.write((const char*)pImage, DEFAULT_IMAGE_SIZE);
+        std::vector<float>Filter_Coefficients = { (float)0.5, (float)0.5 };
 
-    try{
-        FilterAPI::Filter::loadImage(sPath);
-    }
-    catch (std::string * ex) {
-        bReturn = false;
-        std::cout << "TestFunction_10_Performance_NumberOfThreads: Could not load image; \n"
-            << ex << "\n" << std::endl;
-    }
-
-    for (unsigned int iNumThreads = 1; bReturn == true && iNumThreads <= 10; iNumThreads++)
-    {
         try{
-            FilterAPI::Filter::configureFilter(Filter_Coefficients, iNumThreads);
+            FilterAPI::Filter::loadImage(sPath);
         }
         catch (std::string * ex) {
             bReturn = false;
-            std::cout << "TestFunction_10_Performance_NumberOfThreads: Could not configure filter; \n"
+            std::cout << "TestFunction_10_Performance_NumberOfThreads: Could not load image; \n"
                 << ex << "\n" << std::endl;
-            break;
         }
-        FilterAPI::Filter::Start();
-        std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
-        FilterAPI::Filter::Stop();
-        long long NumberOfProcessedImages = FilterAPI::Filter::getNumberOfPrcessedImages();
 
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
-        std::cout << "Number of threads: " << iNumThreads << "; Execution time: " << duration << "; Processed Images: " << NumberOfProcessedImages << "\n" << std::endl;
+        for (unsigned int iNumThreads = 1; bReturn == true && iNumThreads <= 10; iNumThreads++)
+        {
+            try{
+                FilterAPI::Filter::configureFilter(Filter_Coefficients, iNumThreads);
+            }
+            catch (std::string * ex) {
+                bReturn = false;
+                std::cout << "TestFunction_10_Performance_NumberOfThreads: Could not configure filter; \n"
+                    << ex << "\n" << std::endl;
+                break;
+            }
+            FilterAPI::Filter::Start();
+            std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+            FilterAPI::Filter::Stop();
+            long long NumberOfProcessedImages = FilterAPI::Filter::getNumberOfPrcessedImages();
+
+            auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+            std::cout << "Number of threads: " << iNumThreads << "; Execution time: " << duration << "; Processed Images: " << NumberOfProcessedImages << "\n" << std::endl;
+        }
+
+        TestImage.close();
+        if (remove(sPath.c_str()) != 0) {
+            std::cout << "Could not remove the created Test image \n" << std::endl;
+        }
+        FilterAPI::Filter::Release();
+
+        if (pImage) {
+            delete[] pImage;
+            pImage = nullptr;
+        }
+    }
+    else {
+        bReturn = false;
     }
 
-    TestImage.close();
-    if (remove(sPath.c_str()) != 0) {
-        std::cout << "Could not remove the created Test image \n" << std::endl;
-    }
-    FilterAPI::Filter::Release();
-
-    if (pImage) {
-        delete[] pImage;
-        pImage = nullptr;
-    }
     if (bReturn) {
         std::cout << __FUNCTION__ << " - passed\n\n";
     }
@@ -242,59 +248,65 @@ bool TestCases::TestFunction_11_Performance_NumberOfCoefficients() {
     // for i = 1...10 number of coefficients & fixed threads & image & fixed time compare number of output images
     bool bReturn = true;
     unsigned char * pImage = CreateTestImage(DEFAULT_IMAGE_SIZE);
-    std::string sPath = CurrentPath();
-    sPath.append(DEFAULT_IMAGE_NAME);
-    std::ofstream TestImage;
-    TestImage.open(sPath, std::ios::out | std::ios::binary);
-    TestImage.write((const char*)pImage, DEFAULT_IMAGE_SIZE);
+    if (pImage != nullptr) {
+        std::string sPath = CurrentPath();
+        sPath.append(DEFAULT_IMAGE_NAME);
+        std::ofstream TestImage;
+        TestImage.open(sPath, std::ios::out | std::ios::binary);
+        TestImage.write((const char*)pImage, DEFAULT_IMAGE_SIZE);
 
-    try{
-        FilterAPI::Filter::loadImage(sPath);
-    }
-    catch (std::string * ex) {
-        bReturn = false;
-        std::cout << "TestFunction_11_Performance_NumberOfCoefficients: Could not load image; \n"
-            << ex << "\n" << std::endl;
-    }
-
-    for (size_t iNumCoefficients = 1; bReturn == true && iNumCoefficients <= 10; iNumCoefficients++)
-    {
-        std::vector<float>Filter_Coefficients;
-        for (size_t i = 0; i < iNumCoefficients; i++)
-        {
-            Filter_Coefficients.push_back((float)0.1);
-        }
         try{
-            FilterAPI::Filter::configureFilter(Filter_Coefficients, DEFAULT_NUMBER_OF_THREADS);
+            FilterAPI::Filter::loadImage(sPath);
         }
         catch (std::string * ex) {
             bReturn = false;
-            std::cout << "TestFunction_11_Performance_NumberOfCoefficients: Could not configure filter; \n"
+            std::cout << "TestFunction_11_Performance_NumberOfCoefficients: Could not load image; \n"
                 << ex << "\n" << std::endl;
-            break;
         }
-        FilterAPI::Filter::Start();
-        std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
-        FilterAPI::Filter::Stop();
-        long long NumberOfProcessedImages = FilterAPI::Filter::getNumberOfPrcessedImages();
 
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
-        std::cout << "Number of coefficients: " << iNumCoefficients << "; Execution time: " << duration << "; Processed Images: " << NumberOfProcessedImages << "\n" << std::endl;
+        for (size_t iNumCoefficients = 1; bReturn == true && iNumCoefficients <= 10; iNumCoefficients++)
+        {
+            std::vector<float>Filter_Coefficients;
+            for (size_t i = 0; i < iNumCoefficients; i++)
+            {
+                Filter_Coefficients.push_back((float)0.1);
+            }
+            try{
+                FilterAPI::Filter::configureFilter(Filter_Coefficients, DEFAULT_NUMBER_OF_THREADS);
+            }
+            catch (std::string * ex) {
+                bReturn = false;
+                std::cout << "TestFunction_11_Performance_NumberOfCoefficients: Could not configure filter; \n"
+                    << ex << "\n" << std::endl;
+                break;
+            }
+            FilterAPI::Filter::Start();
+            std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+            FilterAPI::Filter::Stop();
+            long long NumberOfProcessedImages = FilterAPI::Filter::getNumberOfPrcessedImages();
+
+            auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+            std::cout << "Number of coefficients: " << iNumCoefficients << "; Execution time: " << duration << "; Processed Images: " << NumberOfProcessedImages << "\n" << std::endl;
+        }
+
+        FilterAPI::Filter::Release();
+
+        TestImage.close();
+        if (remove(sPath.c_str()) != 0) {
+            std::cout << "Could not remove the created Test image \n" << std::endl;
+        }
+
+        if (pImage) {
+            delete[] pImage;
+            pImage = nullptr;
+        }
     }
-
-    FilterAPI::Filter::Release();
-
-    TestImage.close();
-    if (remove(sPath.c_str()) != 0) {
-        std::cout << "Could not remove the created Test image \n" << std::endl;
+    else {
+        bReturn = false;
     }
-
-    if (pImage) {
-        delete[] pImage;
-        pImage = nullptr;
-    }
+    
     if (bReturn) {
         std::cout << __FUNCTION__ << " - passed\n\n";
     }
@@ -309,55 +321,61 @@ bool TestCases::TestFunction_12_Performance_Duration() {
     // for variable time & fixed threads and fixed coefficients & fixed image size compare number of output images
     bool bReturn = true;
     unsigned char * pImage = CreateTestImage(DEFAULT_IMAGE_SIZE);
-    std::string sPath = CurrentPath();
-    sPath.append(DEFAULT_IMAGE_NAME);
-    std::ofstream TestImage;
-    TestImage.open(sPath, std::ios::out | std::ios::binary);
-    TestImage.write((const char*)pImage, DEFAULT_IMAGE_SIZE);
-    std::vector<float>Filter_Coefficients = { (float)0.5, (float)0.5 };
+    if (pImage != nullptr) {
+        std::string sPath = CurrentPath();
+        sPath.append(DEFAULT_IMAGE_NAME);
+        std::ofstream TestImage;
+        TestImage.open(sPath, std::ios::out | std::ios::binary);
+        TestImage.write((const char*)pImage, DEFAULT_IMAGE_SIZE);
+        std::vector<float>Filter_Coefficients = { (float)0.5, (float)0.5 };
 
-    try{
-        FilterAPI::Filter::loadImage(sPath);
-    }
-    catch (std::string * ex) {
-        bReturn = false;
-        std::cout << "TestFunction_11_Performance_NumberOfCoefficients: Could not load image; \n"
-            << ex << "\n" << std::endl;
-    }
-
-    for (size_t iWaitTime = 100; bReturn == true && iWaitTime <= 1000; iWaitTime += 100)
-    {
         try{
-            FilterAPI::Filter::configureFilter(Filter_Coefficients, DEFAULT_NUMBER_OF_THREADS);
+            FilterAPI::Filter::loadImage(sPath);
         }
         catch (std::string * ex) {
             bReturn = false;
-            std::cout << "TestFunction_11_Performance_NumberOfCoefficients: Could not configure filter; \n"
+            std::cout << "TestFunction_11_Performance_NumberOfCoefficients: Could not load image; \n"
                 << ex << "\n" << std::endl;
-            break;
         }
-        FilterAPI::Filter::Start();
-        std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-        std::this_thread::sleep_for(std::chrono::milliseconds(iWaitTime));
-        std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
-        FilterAPI::Filter::Stop();
-        long long NumberOfProcessedImages = FilterAPI::Filter::getNumberOfPrcessedImages();
 
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
-        std::cout << "Wait time: " << iWaitTime << "; Execution time: " << duration << "; Processed Images: " << NumberOfProcessedImages << "\n" << std::endl;
+        for (size_t iWaitTime = 100; bReturn == true && iWaitTime <= 1000; iWaitTime += 100)
+        {
+            try{
+                FilterAPI::Filter::configureFilter(Filter_Coefficients, DEFAULT_NUMBER_OF_THREADS);
+            }
+            catch (std::string * ex) {
+                bReturn = false;
+                std::cout << "TestFunction_11_Performance_NumberOfCoefficients: Could not configure filter; \n"
+                    << ex << "\n" << std::endl;
+                break;
+            }
+            FilterAPI::Filter::Start();
+            std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
+            std::this_thread::sleep_for(std::chrono::milliseconds(iWaitTime));
+            std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
+            FilterAPI::Filter::Stop();
+            long long NumberOfProcessedImages = FilterAPI::Filter::getNumberOfPrcessedImages();
+
+            auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
+            std::cout << "Wait time: " << iWaitTime << "; Execution time: " << duration << "; Processed Images: " << NumberOfProcessedImages << "\n" << std::endl;
+        }
+
+        FilterAPI::Filter::Release();
+
+        TestImage.close();
+        if (remove(sPath.c_str()) != 0) {
+            std::cout << "Could not remove the created Test image \n" << std::endl;
+        }
+
+        if (pImage) {
+            delete[] pImage;
+            pImage = nullptr;
+        }
     }
-
-    FilterAPI::Filter::Release();
-
-    TestImage.close();
-    if (remove(sPath.c_str()) != 0) {
-        std::cout << "Could not remove the created Test image \n" << std::endl;
+    else {
+        bReturn = false;
     }
-
-    if (pImage) {
-        delete[] pImage;
-        pImage = nullptr;
-    }
+    
     if (bReturn) {
         std::cout << __FUNCTION__ << " - passed\n\n";
     }
@@ -376,6 +394,10 @@ bool TestCases::TestFunction_13_Performance_ImageSize() {
     for (size_t iImageSize = 100; bReturn == true && iImageSize <= 1000; iImageSize += 100)
     {
         unsigned char * pImage = CreateTestImage(DEFAULT_IMAGE_SIZE);
+        if (pImage == nullptr) {
+            bReturn = false;
+            break;
+        }
         std::string sPath = CurrentPath();
         sPath.append(DEFAULT_IMAGE_NAME);
         std::ofstream TestImage;
