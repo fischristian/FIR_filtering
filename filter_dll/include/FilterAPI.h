@@ -83,7 +83,13 @@ private:
 
     static unsigned int mNumThreads;
 
+    static bool bTerminateFlag;
+
+    static bool bSettingsChanged;
+
     static std::vector<std::thread*>mWorkerThreads;
+
+    static void ThreadRoutine();
 };
 
 #ifdef __cplusplus

@@ -18,17 +18,9 @@ std::vector<float>FilterAPI::Filter::mFilter;
 unsigned char * FilterAPI::Filter::mImage = 0;
 unsigned int FilterAPI::Filter::uImageSize = 0;
 unsigned int FilterAPI::Filter::mNumThreads = 0;
+bool FilterAPI::Filter::bTerminateFlag = false;
+bool FilterAPI::Filter::bSettingsChanged = true;
 std::vector<std::thread*> FilterAPI::Filter::mWorkerThreads;
-
-// std::thread does not provide a termination flag
-bool bGlobalExit = false;
-bool bGlobalSettingsChanged = true;
-
-struct ThreadSettings{
-    std::vector<float>filterCoeff;
-    unsigned char * pImage;
-    unsigned int uImageSize;
-};
 
 std::string CurrentPath() {
     char cCurrentpath[FILENAME_MAX];
@@ -42,56 +34,7 @@ std::string CurrentPath() {
 #ifdef __cplusplus
 extern "C" {
     namespace FilterAPI {
-#endif
-        void ThreadRoutine(const ThreadSettings & Settings) {
-            std::vector<float>filter_coeff = Settings.filterCoeff;
-            unsigned int ImageSize = Settings.uImageSize;
-            unsigned char * pFilteredImage = nullptr;
-            try {
-                pFilteredImage = new unsigned char[ImageSize];
-            }
-            catch (...){
-                std::cout << "ThreadRoutine error: could not allocate memory for resulting image" << std::endl;
-                return;
-            }
-            memset((void*)pFilteredImage, 0, ImageSize);
-
-            unsigned char * pImage = Settings.pImage;
-
-            std::string sPath = CurrentPath();
-            std::stringstream sImageName;
-            sImageName << "\\Output_" << ImageSize << ".bin";
-            sPath.append(sImageName.str());
-            std::ofstream TestImage;
-            TestImage.open(sPath, std::ios::out | std::ios::binary);
-
-            /*
-            fircoeffs = { 1/11, 2/11, 5/11, 2/11, 1/11 }; // for example
-            for each 'y' in column rows:
-            filtered[y] = 0;
-            for each 'i' in fircoeffs:
-            if 'y+i' is in the original image boundaries:
-            filtered[y] += original[y+i] * fircoeffs[i];
-            */
-            while (!bGlobalExit) {
-                size_t iNumCoff = filter_coeff.size();
-                for (unsigned int iPxl = 0; iPxl < ImageSize; ++iPxl) {
-                    if (iPxl < (ImageSize - iNumCoff)) {
-                        for (int i = 0; i < iNumCoff; ++i) {
-                            pFilteredImage[iPxl] += static_cast<unsigned char>(static_cast<float>(pImage[iPxl + i]) * filter_coeff[i]);
-                        }
-                    }
-                }
-                FilterStatistics::IncreaseNumberOfProcessedImages();
-                if (bGlobalSettingsChanged) {
-                    TestImage.write((const char*)pFilteredImage, ImageSize);
-                    bGlobalSettingsChanged = false;
-                }
-            }
-            TestImage.close();
-            delete[] pFilteredImage;
-            pFilteredImage = NULL;
-        }
+#endif        
         /*****************************************************************************/
         void Filter::configureFilter(const std::vector<float>& vFilter, unsigned int uNumThreads) {
             // std::cout << "Filter::setFilter called \n";
@@ -162,8 +105,8 @@ extern "C" {
         }
         /*****************************************************************************/
         void Filter::Start() {
-            bGlobalExit = false;
-            bGlobalSettingsChanged = true;
+            bTerminateFlag = false;
+            bSettingsChanged = true;
             FilterStatistics::ResetNumberOfProcessedImages();
             if (mFilter.empty()) {
                 throw new std::string("Invalid filter coefficients");
@@ -172,19 +115,15 @@ extern "C" {
                 throw new std::string("Invalid image source");
             }
 
-            ThreadSettings mSettings;
-            mSettings.filterCoeff = Filter::mFilter;
-            mSettings.pImage = Filter::mImage;
-            mSettings.uImageSize = Filter::uImageSize;
-
             for (unsigned int i = 0; i < mNumThreads; ++i){
-                std::thread * first = new std::thread(ThreadRoutine, mSettings);
+                std::thread * first = new std::thread(Filter::ThreadRoutine);
                 mWorkerThreads.push_back(first);
             }
         }
         /*****************************************************************************/
         void Filter::Stop() {
-            bGlobalExit = true;
+            bTerminateFlag = true;
+            bSettingsChanged = false;
             while (!mWorkerThreads.empty()) {
                 std::thread * pThread = mWorkerThreads.back();
                 pThread->join();
@@ -205,6 +144,53 @@ extern "C" {
         /*****************************************************************************/
         long long Filter::getNumberOfPrcessedImages() {
             return FilterStatistics::GetNumberOfProcessedImages();
+        }
+
+        void Filter::ThreadRoutine() {
+            unsigned char * pFilteredImage = nullptr;
+
+            try {
+                pFilteredImage = new unsigned char[uImageSize];
+            }
+            catch (...){
+                std::cout << "ThreadRoutine error: could not allocate memory for resulting image" << std::endl;
+                return;
+            }
+            memset((void*)pFilteredImage, 0, uImageSize);
+
+            std::string sPath = CurrentPath();
+            std::stringstream sImageName;
+            sImageName << "\\Output_" << uImageSize << ".bin";
+            sPath.append(sImageName.str());
+            std::ofstream TestImage;
+            TestImage.open(sPath, std::ios::out | std::ios::binary);
+
+            /*
+            fircoeffs = { 1/11, 2/11, 5/11, 2/11, 1/11 }; // for example
+            for each 'y' in column rows:
+            filtered[y] = 0;
+            for each 'i' in fircoeffs:
+            if 'y+i' is in the original image boundaries:
+            filtered[y] += original[y+i] * fircoeffs[i];
+            */
+            while (!bTerminateFlag) {
+                size_t iNumCoff = mFilter.size();
+                for (unsigned int iPxl = 0; iPxl < uImageSize; ++iPxl) {
+                    if (iPxl < (uImageSize - iNumCoff)) {
+                        for (int i = 0; i < iNumCoff; ++i) {
+                            pFilteredImage[iPxl] += static_cast<unsigned char>(static_cast<float>(mImage[iPxl + i]) * mFilter[i]);
+                        }
+                    }
+                }
+                FilterStatistics::IncreaseNumberOfProcessedImages();
+                if (bSettingsChanged) {
+                    TestImage.write((const char*)pFilteredImage, uImageSize);
+                    bSettingsChanged = false;
+                }
+            }
+            TestImage.close();
+            delete[] pFilteredImage;
+            pFilteredImage = NULL;
         }
 #ifdef __cplusplus
 }  //  namespace FilterAPI
