@@ -3,7 +3,7 @@ Requirements:
 ###################################
  o	Functional: 
 	- Apply Filter to original image and calculate resulting image
-	- Do not save resulting image to disk (?)
+	- Output resulting image file to disk
 	- Pass filter coefficients as std::vector<float>
 	- Filter coefficients must not be changed during calculation
 	- Must use n Threads, n >= 1, each thread executes own calculation
@@ -21,7 +21,6 @@ Requirements:
 	- Set number of execution threads of filtering module
 	- Open / pass image file to library
 	- Measure “filtered images per second”
-	- Start / stop filter library?
 
  o	Structural:
 	- User input coefficients?

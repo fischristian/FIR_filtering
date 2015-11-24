@@ -1,12 +1,190 @@
-Performance
-- 2 for loops: square of complexity
-
 Quality of Code
-- static analysis: cppcheck
-- dynamic analysis:
-
+###############################################################################
+- static analysis: Cppcheck
+    - no Errors / Warnings / Style / Portability issues
+- static analysis: Compile /W4
+    - 4x C4251 for the private members of class FilterAPI::Filter
+	- 2x C4530 missing unwind semantics /EHsc
+	- 2x D9002 ignoring -std=c++0x (Windows)
+	
 Limitations
-- uses std c++11 only
+###############################################################################
+- uses STL c++11 only
 - could use other libraries as boost
-- yet most simple solution
-- meets all requirements?
+
+Performance Test Results
+###############################################################################
+- Reference: Intel Core i7-3770 @ 3.40 GHz, 16 GB, Win7_x64
+- Running "Test_Application.exe test"
+- TestFunction_10_Performance_NumberOfThreads
+  -> Works as expected: The higher the number of threads, the higher the number of processed images
+- TestFunction_11_Performance_NumberOfCoefficients
+  -> Works as expected: The higher the number of filter coefficients, the fewer the number of processed images
+- TestFunction_12_Performance_Duration  
+  -> Works as expected: The longer the execution time, the higher the number of processed images
+- TestFunction_13_Performance_ImageSize
+  -> Works as expected: The bigger the image size, the fewer the number of processed images  
+
+::OUTPUT::
+  
+############################################
+# FIR_Filtering Test Application           #
+############################################
+
+
+Executing in test mode..Running all tests
+
+Run TestCases::TestFunction_00_Invalid_Fir_Coefficients
+TestCases::TestFunction_00_Invalid_Fir_Coefficients - passed
+
+Run TestCases::TestFunction_01_Invalid_ImageSource
+TestCases::TestFunction_01_Invalid_ImageSource - passed
+
+Run TestCases::TestFunction_02_Invalid_ThreadNumber
+TestCases::TestFunction_02_Invalid_ThreadNumber - passed
+
+Run TestCases::TestFunction_10_Performance_NumberOfThreads
+D:\FIR_filtering\bin\test_app\TestImage.bin successfully opened
+
+1044480 Bytes successfully read
+
+Number of threads: 1; Execution time: 1000000; Processed Images: 654
+
+Number of threads: 2; Execution time: 1000000; Processed Images: 1316
+
+Number of threads: 3; Execution time: 1000000; Processed Images: 1697
+
+Number of threads: 4; Execution time: 1000000; Processed Images: 2162
+
+Number of threads: 5; Execution time: 1000000; Processed Images: 2363
+
+Number of threads: 6; Execution time: 1000000; Processed Images: 2530
+
+Number of threads: 7; Execution time: 1000750; Processed Images: 2591
+
+Number of threads: 8; Execution time: 1001500; Processed Images: 2652
+
+Number of threads: 9; Execution time: 1055250; Processed Images: 2800
+
+Number of threads: 10; Execution time: 1024000; Processed Images: 2884
+
+TestCases::TestFunction_10_Performance_NumberOfThreads - passed
+
+Run TestCases::TestFunction_11_Performance_NumberOfCoefficients
+D:\FIR_filtering\bin\test_app\TestImage.bin successfully opened
+
+1044480 Bytes successfully read
+
+Number of coefficients: 1; Execution time: 1000000; Processed Images: 3136
+
+Number of coefficients: 2; Execution time: 1000000; Processed Images: 1867
+
+Number of coefficients: 3; Execution time: 1000000; Processed Images: 1327
+
+Number of coefficients: 4; Execution time: 1000000; Processed Images: 982
+
+Number of coefficients: 5; Execution time: 1000000; Processed Images: 819
+
+Number of coefficients: 6; Execution time: 1000000; Processed Images: 699
+
+Number of coefficients: 7; Execution time: 1000000; Processed Images: 604
+
+Number of coefficients: 8; Execution time: 1000000; Processed Images: 540
+
+Number of coefficients: 9; Execution time: 1000000; Processed Images: 483
+
+Number of coefficients: 10; Execution time: 1000000; Processed Images: 430
+
+TestCases::TestFunction_11_Performance_NumberOfCoefficients - passed
+
+Run TestCases::TestFunction_12_Performance_Duration
+D:\FIR_filtering\bin\test_app\TestImage.bin successfully opened
+
+1044480 Bytes successfully read
+
+Wait time: 100; Execution time: 100000; Processed Images: 195
+
+Wait time: 200; Execution time: 200000; Processed Images: 354
+
+Wait time: 300; Execution time: 300000; Processed Images: 504
+
+Wait time: 400; Execution time: 400000; Processed Images: 746
+
+Wait time: 500; Execution time: 500000; Processed Images: 890
+
+Wait time: 600; Execution time: 600000; Processed Images: 1040
+
+Wait time: 700; Execution time: 700000; Processed Images: 1232
+
+Wait time: 800; Execution time: 800000; Processed Images: 1478
+
+Wait time: 900; Execution time: 900000; Processed Images: 1602
+
+Wait time: 1000; Execution time: 1000000; Processed Images: 1825
+
+TestCases::TestFunction_12_Performance_Duration - passed
+
+Run TestCases::TestFunction_13_Performance_ImageSize
+D:\FIR_filtering\bin\test_app\TestImage.bin successfully opened
+
+8192 Bytes successfully read
+
+ImageSize: 10000; Execution time: 1000000; Processed Images: 238930
+
+D:\FIR_filtering\bin\test_app\TestImage.bin successfully opened
+
+36864 Bytes successfully read
+
+ImageSize: 40000; Execution time: 1000000; Processed Images: 51752
+
+D:\FIR_filtering\bin\test_app\TestImage.bin successfully opened
+
+86016 Bytes successfully read
+
+ImageSize: 90000; Execution time: 1000000; Processed Images: 21142
+
+D:\FIR_filtering\bin\test_app\TestImage.bin successfully opened
+
+159744 Bytes successfully read
+
+ImageSize: 160000; Execution time: 1000000; Processed Images: 11326
+
+D:\FIR_filtering\bin\test_app\TestImage.bin successfully opened
+
+249856 Bytes successfully read
+
+ImageSize: 250000; Execution time: 1000000; Processed Images: 7612
+
+D:\FIR_filtering\bin\test_app\TestImage.bin successfully opened
+
+356352 Bytes successfully read
+
+ImageSize: 360000; Execution time: 1000000; Processed Images: 5224
+
+D:\FIR_filtering\bin\test_app\TestImage.bin successfully opened
+
+487424 Bytes successfully read
+
+ImageSize: 490000; Execution time: 1000000; Processed Images: 3746
+
+D:\FIR_filtering\bin\test_app\TestImage.bin successfully opened
+
+638976 Bytes successfully read
+
+ImageSize: 640000; Execution time: 1000000; Processed Images: 2921
+
+D:\FIR_filtering\bin\test_app\TestImage.bin successfully opened
+
+806912 Bytes successfully read
+
+ImageSize: 810000; Execution time: 1000000; Processed Images: 2318
+
+D:\FIR_filtering\bin\test_app\TestImage.bin successfully opened
+
+999424 Bytes successfully read
+
+ImageSize: 1000000; Execution time: 1000000; Processed Images: 1956
+
+TestCases::TestFunction_13_Performance_ImageSize - passed
+
+All Tests finished. 0 failed.

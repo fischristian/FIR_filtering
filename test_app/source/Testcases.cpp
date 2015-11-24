@@ -80,6 +80,7 @@ bool TestCases::TestFunction_00_Invalid_Fir_Coefficients() {
     }
     catch (std::string * ex) {
         // ok by design
+        (void*)ex;
     }
     try{
         std::vector<float>test01{ (float)0.0, (float)0.1, (float)1.0 };
@@ -89,6 +90,7 @@ bool TestCases::TestFunction_00_Invalid_Fir_Coefficients() {
     }
     catch (std::string * ex) {
         // ok by design
+        (void*)ex;
     }
     try{
         std::vector<float>test02{ (float)0.0, (float)-0.1, (float)-1.0 };
@@ -98,6 +100,7 @@ bool TestCases::TestFunction_00_Invalid_Fir_Coefficients() {
     }
     catch (std::string * ex) {
         // ok by design
+        (void*)ex;
     }
     try{
         std::vector<float>test03{ 0.0, 0.0, 0.0 };
@@ -107,6 +110,7 @@ bool TestCases::TestFunction_00_Invalid_Fir_Coefficients() {
     }
     catch (std::string * ex) {
         // ok by design
+        (void*)ex;
     }
     if (bReturn) {
         std::cout << __FUNCTION__ << " - passed\n\n";
@@ -128,6 +132,7 @@ bool TestCases::TestFunction_01_Invalid_ImageSource() {
     }
     catch (std::string * ex) {
         // ok by design
+        (void*)ex;
     }
     try{
         std::string ImageSource01 = "ThisDoesCertainlyNotExist";
@@ -137,6 +142,7 @@ bool TestCases::TestFunction_01_Invalid_ImageSource() {
     }
     catch (std::string * ex) {
         // ok by design
+        (void*)ex;
     }
     if (bReturn) {
         std::cout << __FUNCTION__ << " - passed\n\n";
@@ -158,6 +164,7 @@ bool TestCases::TestFunction_02_Invalid_ThreadNumber() {
     }
     catch (std::string * ex) {
         // ok by design
+        (void*)ex;
     }
     if (bReturn) {
         std::cout << __FUNCTION__ << " - passed\n\n";
@@ -188,7 +195,7 @@ bool TestCases::TestFunction_10_Performance_NumberOfThreads() {
             << ex << "\n" << std::endl;
     }
 
-    for (size_t iNumThreads = 1; bReturn == true && iNumThreads <= 10; iNumThreads++)
+    for (unsigned int iNumThreads = 1; bReturn == true && iNumThreads <= 10; iNumThreads++)
     {
         try{
             FilterAPI::Filter::configureFilter(Filter_Coefficients, iNumThreads);
@@ -207,7 +214,7 @@ bool TestCases::TestFunction_10_Performance_NumberOfThreads() {
         long long NumberOfProcessedImages = FilterAPI::Filter::getNumberOfPrcessedImages();
 
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
-        std::cout << "Number of threads: " << iNumThreads << "; Execution time: " << duration << "; Processed Iamges: " << NumberOfProcessedImages << "\n" << std::endl;
+        std::cout << "Number of threads: " << iNumThreads << "; Execution time: " << duration << "; Processed Images: " << NumberOfProcessedImages << "\n" << std::endl;
     }
 
     TestImage.close();
@@ -272,7 +279,7 @@ bool TestCases::TestFunction_11_Performance_NumberOfCoefficients() {
         long long NumberOfProcessedImages = FilterAPI::Filter::getNumberOfPrcessedImages();
 
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
-        std::cout << "Number of coefficients: " << iNumCoefficients << "; Execution time: " << duration << "; Processed Iamges: " << NumberOfProcessedImages << "\n" << std::endl;
+        std::cout << "Number of coefficients: " << iNumCoefficients << "; Execution time: " << duration << "; Processed Images: " << NumberOfProcessedImages << "\n" << std::endl;
     }
 
     FilterAPI::Filter::Release();
@@ -334,7 +341,7 @@ bool TestCases::TestFunction_12_Performance_Duration() {
         long long NumberOfProcessedImages = FilterAPI::Filter::getNumberOfPrcessedImages();
 
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
-        std::cout << "Wait time: " << iWaitTime << "; Execution time: " << duration << "; Processed Iamges: " << NumberOfProcessedImages << "\n" << std::endl;
+        std::cout << "Wait time: " << iWaitTime << "; Execution time: " << duration << "; Processed Images: " << NumberOfProcessedImages << "\n" << std::endl;
     }
 
     FilterAPI::Filter::Release();
@@ -399,7 +406,7 @@ bool TestCases::TestFunction_13_Performance_ImageSize() {
 
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count();
         std::cout << "ImageSize: " << iImageSize * iImageSize << "; Execution time: " << duration
-            << "; Processed Iamges: " << NumberOfProcessedImages << "\n" << std::endl;
+            << "; Processed Images: " << NumberOfProcessedImages << "\n" << std::endl;
 
         FilterAPI::Filter::Release();
 

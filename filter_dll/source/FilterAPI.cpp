@@ -5,6 +5,15 @@
 #include "../include/FilterAPI.h"
 #include "../include/FilterStatistics.h"
 
+#include <stdio.h>
+#ifdef _WIN32
+#include <direct.h>
+#define GetCurrentDir _getcwd
+#else
+#include <unistd.h>
+#define GetCurrentDir getcwd
+#endif
+
 std::vector<float>FilterAPI::Filter::mFilter;
 unsigned char * FilterAPI::Filter::mImage = 0;
 unsigned int FilterAPI::Filter::uImageSize = 0;
@@ -13,12 +22,22 @@ std::vector<std::thread*> FilterAPI::Filter::mWorkerThreads;
 
 // std::thread does not provide a termination flag
 bool bGlobalExit = false;
+bool bGlobalSettingsChanged = true;
 
 struct ThreadSettings{
     std::vector<float>filterCoeff;
     unsigned char * pImage;
     unsigned int uImageSize;
 };
+
+std::string CurrentPath() {
+    char cCurrentpath[FILENAME_MAX];
+    if (!GetCurrentDir(cCurrentpath, sizeof(cCurrentpath))) {
+        // error handling
+        std::cout << "Could not get current working dir\n" << std::endl;
+    }
+    return std::string(cCurrentpath);
+}
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,6 +58,12 @@ extern "C" {
 
             unsigned char * pImage = Settings.pImage;
 
+            std::string sPath = CurrentPath();
+            std::stringstream sImageName;
+            sImageName << "\\Output_" << ImageSize << ".bin";
+            sPath.append(sImageName.str());
+            std::ofstream TestImage(sPath, std::ios::out | std::ios::binary);
+
             /*
             fircoeffs = { 1/11, 2/11, 5/11, 2/11, 1/11 }; // for example
             for each 'y' in column rows:
@@ -48,16 +73,21 @@ extern "C" {
             filtered[y] += original[y+i] * fircoeffs[i];
             */
             while (!bGlobalExit) {
-                int iNumCoff = filter_coeff.size();
-                for (int iPxl = 0; iPxl < ImageSize; ++iPxl) {
+                size_t iNumCoff = filter_coeff.size();
+                for (unsigned int iPxl = 0; iPxl < ImageSize; ++iPxl) {
                     if (iPxl < (ImageSize - iNumCoff)) {
                         for (int i = 0; i < iNumCoff; ++i) {
-                            pFilteredImage[iPxl] += pImage[iPxl + i] * filter_coeff[i];
+                            pFilteredImage[iPxl] += static_cast<unsigned char>(static_cast<float>(pImage[iPxl + i]) * filter_coeff[i]);
                         }
                     }
                 }
                 FilterStatistics::IncreaseNumberOfProcessedImages();
+                if (bGlobalSettingsChanged) {
+                    TestImage.write((const char*)pFilteredImage, ImageSize);
+                    bGlobalSettingsChanged = false;
+                }
             }
+            TestImage.close();
             delete[] pFilteredImage;
             pFilteredImage = NULL;
         }
@@ -128,7 +158,7 @@ extern "C" {
                 throw new std::string("Could not allocate memory to store Image file");
             }
             memset(mImage, 0, iSize / 2);
-            uImageSize = iSize / 2;
+            uImageSize = static_cast<unsigned int>(iSize / 2);
 
             // charImageData contains ascii values of hex values
             // goal: transform ascii to byte value and store it in mImage
@@ -175,12 +205,11 @@ extern "C" {
             }
 
             ThreadSettings mSettings;
-            memset(&mSettings, 0, sizeof(ThreadSettings));
             mSettings.filterCoeff = Filter::mFilter;
             mSettings.pImage = Filter::mImage;
             mSettings.uImageSize = Filter::uImageSize;
 
-            for (int i = 0; i < mNumThreads; ++i){
+            for (unsigned int i = 0; i < mNumThreads; ++i){
                 std::thread * first = new std::thread(ThreadRoutine, mSettings);
                 mWorkerThreads.push_back(first);
             }
