@@ -163,6 +163,7 @@ extern "C" {
         /*****************************************************************************/
         void Filter::Start() {
             bGlobalExit = false;
+            bGlobalSettingsChanged = true;
             FilterStatistics::ResetNumberOfProcessedImages();
             if (mFilter.empty()) {
                 throw new std::string("Invalid filter coefficients");
