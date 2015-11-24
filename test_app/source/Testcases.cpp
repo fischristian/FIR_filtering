@@ -182,7 +182,8 @@ bool TestCases::TestFunction_10_Performance_NumberOfThreads() {
     unsigned char * pImage = CreateTestImage(DEFAULT_IMAGE_SIZE);
     std::string sPath = CurrentPath();
     sPath.append(DEFAULT_IMAGE_NAME);
-    std::ofstream TestImage(sPath, std::ios::out | std::ios::binary);
+    std::ofstream TestImage;
+    TestImage.open(sPath, std::ios::out | std::ios::binary);
     TestImage.write((const char*)pImage, DEFAULT_IMAGE_SIZE);
     std::vector<float>Filter_Coefficients = { (float)0.5, (float)0.5 };
 
@@ -243,7 +244,8 @@ bool TestCases::TestFunction_11_Performance_NumberOfCoefficients() {
     unsigned char * pImage = CreateTestImage(DEFAULT_IMAGE_SIZE);
     std::string sPath = CurrentPath();
     sPath.append(DEFAULT_IMAGE_NAME);
-    std::ofstream TestImage(sPath, std::ios::out | std::ios::binary);
+    std::ofstream TestImage;
+    TestImage.open(sPath, std::ios::out | std::ios::binary);
     TestImage.write((const char*)pImage, DEFAULT_IMAGE_SIZE);
 
     try{
@@ -309,7 +311,8 @@ bool TestCases::TestFunction_12_Performance_Duration() {
     unsigned char * pImage = CreateTestImage(DEFAULT_IMAGE_SIZE);
     std::string sPath = CurrentPath();
     sPath.append(DEFAULT_IMAGE_NAME);
-    std::ofstream TestImage(sPath, std::ios::out | std::ios::binary);
+    std::ofstream TestImage;
+    TestImage.open(sPath, std::ios::out | std::ios::binary);
     TestImage.write((const char*)pImage, DEFAULT_IMAGE_SIZE);
     std::vector<float>Filter_Coefficients = { (float)0.5, (float)0.5 };
 
@@ -375,7 +378,8 @@ bool TestCases::TestFunction_13_Performance_ImageSize() {
         unsigned char * pImage = CreateTestImage(DEFAULT_IMAGE_SIZE);
         std::string sPath = CurrentPath();
         sPath.append(DEFAULT_IMAGE_NAME);
-        std::ofstream TestImage(sPath, std::ios::out | std::ios::binary);
+        std::ofstream TestImage;
+        TestImage.open(sPath, std::ios::out | std::ios::binary);
         TestImage.write((const char*)pImage, (iImageSize * iImageSize));
 
         try{

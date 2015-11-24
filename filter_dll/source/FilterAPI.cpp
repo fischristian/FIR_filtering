@@ -62,7 +62,8 @@ extern "C" {
             std::stringstream sImageName;
             sImageName << "\\Output_" << ImageSize << ".bin";
             sPath.append(sImageName.str());
-            std::ofstream TestImage(sPath, std::ios::out | std::ios::binary);
+            std::ofstream TestImage;
+            TestImage.open(sPath, std::ios::out | std::ios::binary);
 
             /*
             fircoeffs = { 1/11, 2/11, 5/11, 2/11, 1/11 }; // for example
@@ -135,16 +136,6 @@ extern "C" {
             }
             myFile.seekg(0, myFile.beg);
 
-            char * charImageData = nullptr;
-            try{
-                charImageData = new char[iSize + 1];
-            }
-            catch (...){
-                throw new std::string("Could not allocate memory to read Image file");
-            }
-            memset(charImageData, 0, iSize + 1);
-            myFile.read((char*)charImageData, iSize);
-
             // Reset Image memory, if it was already initialized
             if (mImage != nullptr) {
                 delete[] mImage;
@@ -152,43 +143,19 @@ extern "C" {
             }
 
             try{
-                mImage = new unsigned char[iSize / 2];
+                mImage = new unsigned char[iSize];
             }
             catch (...){
                 throw new std::string("Could not allocate memory to store Image file");
             }
-            memset(mImage, 0, iSize / 2);
-            uImageSize = static_cast<unsigned int>(iSize / 2);
+            memset(mImage, 0, iSize);
+            myFile.read((char*)mImage, iSize);
 
-            // charImageData contains ascii values of hex values
-            // goal: transform ascii to byte value and store it in mImage
-
-            // ugly, but works.
-            for (size_t i = 0; i < iSize; i += 2)
-            {
-                char pChar1 = charImageData[i];
-                std::string s1(&pChar1, 1);
-                char pChar2 = charImageData[i+1];
-                std::string s2(&pChar2, 1);
-
-                std::stringstream stdS1(s1);
-                std::stringstream stdS2(s2);
-
-                int16_t Value1 = 0;
-                int16_t Value2 = 0;
-
-                stdS1 >> std::hex >> Value1;
-                stdS2 >> std::hex >> Value2;
-
-                // shift left value1 by 4 bit and add value2
-                mImage[i/2] = (unsigned char)((Value1 << 4) & 0xFF | Value2 & 0xFF);
-            }
-
+            uImageSize = static_cast<unsigned int>(iSize);
+            
             std::cout << source.c_str() << " successfully opened\n" << std::endl;
             std::cout << iSize << " Bytes successfully read\n" << std::endl;
 
-            delete[] charImageData;
-            charImageData = nullptr;
             myFile.close();
 
             return true;

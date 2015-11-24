@@ -1,11 +1,12 @@
-Further improvements:
+Outlook to further improvements / ideas:
+###############################################################################
 
-- using boost library
-- compiler flags to optimize code
-- doxygen code
+- using boost library for easier platform-independent development and additional functionalities
 
-Comments:
+- using other compiler flags for code optimization
 
-- What was easy:
+- more elaborated class structure for the filter class
 
-- What was difficult:
+- more elaborated user menu (or even gui?)
+
+- using doxygen for html/xml/.. code documentation

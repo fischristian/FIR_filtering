@@ -6,11 +6,15 @@ Quality of Code
     - 4x C4251 for the private members of class FilterAPI::Filter
 	- 2x C4530 missing unwind semantics /EHsc
 	- 2x D9002 ignoring -std=c++0x (Windows)
+
+Test of implemented algorithm
+###############################################################################
+- 	
 	
 Limitations
 ###############################################################################
 - uses STL c++11 only
-- could use other libraries as boost
+- no further compiler optimizations triggered
 
 Performance Test Results
 ###############################################################################
